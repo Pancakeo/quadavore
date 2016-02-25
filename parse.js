@@ -11,12 +11,12 @@ var modules = {
         per_row: function(row, index)
         {
             var speed = parseFloat(row['speed(mph)']);
-            
+
             if (this.speed_over_zero === false && speed > 0)
             {
                 this.speed_over_zero = true;
             }
-            
+
             if (this.speed_over_zero === true)
             {
                 this.speed_cumulative += speed;
@@ -35,12 +35,12 @@ var modules = {
         per_row: function(row, index)
         {
             var altitude = parseFloat(row['altitude(feet)']);
-            
+
             if (this.alt_over_zero === false && altitude > 0)
             {
                 this.alt_over_zero = true;
             }
-            
+
             if (this.alt_over_zero === true)
             {
                 this.alt_cumulative += altitude;
@@ -60,12 +60,12 @@ var modules = {
         {
             var altitude = parseFloat(row['altitude(feet)']);
             var distance = parseFloat(row['distance(feet)']);
-            
+
             if (this.alt_over_zero === false && altitude > 0)
             {
                 this.alt_over_zero = true;
             }
-            
+
             if (this.alt_over_zero === true)
             {
                 this.dist_cumulative += distance;
@@ -74,7 +74,7 @@ var modules = {
         },
         result: function()
         {
-            return this.dist_cumulative / this.dist_records / 5280;  
+            return this.dist_cumulative / this.dist_records / 5280;
         }
     },
     max_distance_miles: {
@@ -110,12 +110,23 @@ var modules = {
             return moment.duration(this.flight_time_ms).asMinutes();
         }
     }
-}
+};
 
-function parse_log(filename, modules)
+function parse_log(filename, modules, options, callback)
 {
+    if (callback === undefined) {
+        callback = Function.prototype; // empty function
+    }
+
+    options = Object.assign({use_console: true}, options);
+
     fs.readFile(filename, {encoding: 'utf8'}, function(err, content)
     {
+        if (err) {
+            callback({error: err + ""});
+            return;
+        }
+
         var rows = new CSV(content, { header: true}).parse();
         rows.forEach(function(row, index)
         {
@@ -125,7 +136,7 @@ function parse_log(filename, modules)
                 {
                     modules[module].per_row(row, index);
                 }
-                
+
                 if (index == rows.length - 1)
                 {
                     if (modules[module].last_row != undefined)
@@ -135,12 +146,31 @@ function parse_log(filename, modules)
                 }
             }
         });
-        
+
+        var output = {};
         for (var module in modules)
         {
-            console.log(module+': '+modules[module].result());
+            if (options.use_console) {
+                console.log(module+': '+modules[module].result());
+            }
+
+            output[module] = modules[module].result();
         }
+
+        output['__filename'] = filename;
+        callback(output);
     });
 }
 
-parse_log(filename, modules);
+// Added this so the exports below could work.
+try {
+    parse_log(filename, modules);
+}
+catch (e) {
+    console.log('Heh heh');
+}
+
+// Wup (called by server/client require)
+exports.wup = function(filename, callback) {
+    parse_log(filename, modules, {use_console: false}, callback);
+};

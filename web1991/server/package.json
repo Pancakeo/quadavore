@@ -1,0 +1,20 @@
+{
+  "name": "quadavore-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "wup.js",
+  "dependencies": {
+    "express": "^4.13.4",
+    "finalhandler": "^0.4.1",
+    "node-uuid": "^1.4.7",
+    "serve-static": "^1.10.0",
+    "sqlite3": "^3.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node wup.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

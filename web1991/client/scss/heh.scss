@@ -1,29 +1,4 @@
-#chatterbox {
-
-  #chatterbox_pane {
-    display: flex;
-    margin-bottom: 10px;
-
-    #chat {
-      height: 100%;
-      flex-grow: 5;
-      border: 1px #ccc solid;
-
-      .message_wrapper {
-        width: 100%;
-      }
-    }
-
-    #users {
-      height: 100%;
-      flex-grow: 1;
-      border: 1px blue solid;
-    }
-  }
-
-  #composer {
-    width: 100%;
-    padding: 5px;
-    border: 1px black solid;
-  }
+#wup
+{
+  color: red;
 }

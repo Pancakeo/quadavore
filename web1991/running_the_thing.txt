@@ -1,11 +1,15 @@
-Grunt things are a little different, but basically, run these things from the command line:
+First, install grunt. http://gruntjs.com/getting-started This is usually:
+npm install -g grunt-cli
 
-# from this dir
-npm install
+Next, run npm install from the web1991 folder.
 
-# may need to install Grunt?
-
+Then:
 grunt build
+That should produce a "build/" folder, with everything compiled.
+If you'd like to make changes, do:
 grunt heh
+Which adds a watcher and recompiles most files on-the-fly.
 
-# Also need the node.js thing going!
+# Launching the server (express routes and http static serving)
+Run npm install from web1991/server
+Then, node wup.js

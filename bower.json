@@ -2,7 +2,8 @@
   "name": "quadavore",
   "version": "0.0.0",
   "authors": [
-    "markle12 <markle12@gmail.com>"
+    "markle12 <markle12@gmail.com>",
+    "pancakeo"
   ],
   "license": "MIT",
   "private": true,
@@ -15,6 +16,7 @@
   ],
   "dependencies": {
     "comma-separated-values": "~3.6.4",
-    "moment": "~2.11.2"
+    "moment": "~2.11.2",
+    "requirejs": "~2.1.22"
   }
 }

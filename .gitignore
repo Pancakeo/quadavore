@@ -34,3 +34,14 @@ node_modules
 
 # WebStorm
 .idea
+
+# api keys and what not
+secrets.txt
+
+# Sample data
+quad_logs
+
+# Dependencies, caches, and auto-generated lump:
+build
+bower_components
+.sass-cache

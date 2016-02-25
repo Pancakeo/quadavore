@@ -1,0 +1,11 @@
+Grunt things are a little different, but basically, run these things from the command line:
+
+# from this dir
+npm install
+
+# may need to install Grunt?
+
+grunt build
+grunt heh
+
+# Also need the node.js thing going!

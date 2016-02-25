@@ -30,9 +30,6 @@ module.exports = function(grunt)
 				expand: true
 			}
 		},
-		concat: {
-			'build/quadavore.js': ['build/vendor.js', 'build/client.js']
-		},
 		jshint: {
 			options: {
 				eqnull: true,

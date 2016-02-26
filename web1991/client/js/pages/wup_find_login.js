@@ -5,6 +5,37 @@ module.exports = (function()
 
 	module.init = function()
 	{
+		if (localStorage.custom_user_id != null)
+		{
+			module.$("#custom_user_id").val(localStorage.custom_user_id);
+		}
+
+		if (localStorage.custom_name != null)
+		{
+			module.$("#custom_name").val(localStorage.custom_name);
+		}
+
+		module.$("#custom_login").on('click', function()
+		{
+			var profile = {
+				id: module.$("#custom_user_id").val().trim(),
+				name: module.$("#custom_name").val().trim()
+			};
+
+			if (profile.id.length < 4 || profile.name.length < 3)
+			{
+				alert('ID mus be 4+ characters, name mus be 3+.');
+				return;
+			}
+
+			localStorage.custom_user_id = profile.id;
+			localStorage.custom_name = profile.name;
+
+			window.quadavore.facebook_profile = profile;
+			module.$container.hide();
+			require('./chart_land').load($('body'));
+		});
+
 		var facebook_login = function(response)
 		{
 			var handlers = {

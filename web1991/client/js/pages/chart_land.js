@@ -222,6 +222,8 @@ module.exports = (function()
 							csv_raw: event.target.result
 						};
 
+						$row.find('td:nth-child(3)').text('Uploading...');
+
 						$.ajax({
 							type: "PUT",
 							url: '/flight_log',

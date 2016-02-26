@@ -56,21 +56,22 @@ module.exports = function(grunt)
 				expand: true
 			}
 		},
-		sass: {
+		less: {
 			dev: {
 				options: {
-					style: 'nested'
+					ieCompat: false
 				},
 				files: {
-					"build/quadavore.css": "client/scss/*.scss"
+					"build/quadavore.css": "client/less/*.less"
 				}
 			},
 			prod: {
 				options: {
-					style: 'compressed'
+					ieCompat: false,
+					compress: true
 				},
 				files: {
-					"build/quadavore.css": "client/scss/*.scss"
+					"build/quadavore.css": "client/scss/*.less"
 				}
 			}
 		},
@@ -92,9 +93,9 @@ module.exports = function(grunt)
 				files: ['client/html/**/*.html'],
 				tasks: ['copy:html']
 			},
-			compile_sass: {
-				files: ['client/scss/*.scss'],
-				tasks: 'sass:dev'
+			compile_less: {
+				files: ['client/less/*.less'],
+				tasks: 'less:dev'
 			}
 		},
 		uglify: {
@@ -112,7 +113,7 @@ module.exports = function(grunt)
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-sass');
+	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-htmlmin');
 	grunt.loadNpmTasks('grunt-browserify');
@@ -128,12 +129,12 @@ module.exports = function(grunt)
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'refupdate', 'jshint', 'copy:build', 'sass:dev', 'htmlmin:dev', 'browserify']
+		['clean:build', 'refupdate', 'jshint', 'copy:build', 'less:dev', 'htmlmin:dev', 'browserify']
 	);
 
 	grunt.registerTask(
 		'release',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'jshint', 'copy:build', 'sass:prod', 'htmlmin:prod', 'browserify', 'uglify']
+		['clean:build', 'jshint', 'copy:build', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
 	);
 };

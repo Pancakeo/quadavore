@@ -49,7 +49,14 @@ module.exports = (function()
 								{
 									var $row = $('<tr/>');
 									$row.append('<td>' + item + '</td>');
-									$row.append('<td>' + parsed_output[item].toFixed(2) + '</td>');
+
+									var nice_value = parsed_output[item];
+									if (typeof(nice_value) == "number")
+									{
+										nice_value = nice_value.toFixed(2);
+									}
+
+									$row.append('<td>' + nice_value + '</td>');
 									$table.append($row);
 								}
 								else if (modules[item].type == 'series')

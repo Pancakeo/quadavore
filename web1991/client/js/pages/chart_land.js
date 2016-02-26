@@ -10,44 +10,49 @@ module.exports = (function()
 
 	module.init = function()
 	{
-		$.get('/flight_logs', {user_id: window.quadavore.facebook_profile.id}, function(result)
+		var get_flight_logs = function()
 		{
-			var $flights = $("#previous_flights").empty();
-
-			result.flight_logs.forEach(function(name)
+			$.get('/flight_logs', {user_id: window.quadavore.facebook_profile.id}, function(result)
 			{
-				var $flight = $('<div class="flight_link">' + name + '</div>');
-				$flight.on('click', function()
+				var $flights = $("#previous_flights").empty();
+
+				result.flight_logs.forEach(function(name)
 				{
-					$.get('/flight_log', {flight_name: name, user_id: window.quadavore.facebook_profile.id}, function(result)
+					var $flight = $('<div class="flight_link">' + name + '</div>');
+					$flight.on('click', function()
 					{
-						var $parsed_flight = $("#parsed_flight");
-
-						if (!result.success)
+						$.get('/flight_log', {flight_name: name, user_id: window.quadavore.facebook_profile.id}, function(result)
 						{
-							$parsed_flight.text('Error: ' + result.reason);
-							return;
-						}
+							var $parsed_flight = $("#parsed_flight");
 
-						$parsed_flight.find('#parsed_flight_name').text(name);
+							if (!result.success)
+							{
+								$parsed_flight.text('Error: ' + result.reason);
+								return;
+							}
 
-						var parsed_output = parse_thing(result.csv_raw, parse_modules);
-						// console.log(parsed_output);
-						var $table = $parsed_flight.find('table tbody').empty();
+							$parsed_flight.find('#parsed_flight_name').text(name);
 
-						for (var item in parsed_output)
-						{
-							var $row = $('<tr/>');
-							$row.append('<td>' + item + '</td>');
-							$row.append('<td>' + parsed_output[item].toFixed(2) + '</td>');
-							$table.append($row);
-						}
+							var parsed_output = parse_thing(result.csv_raw, parse_modules);
+							// console.log(parsed_output);
+							var $table = $parsed_flight.find('table tbody').empty();
+
+							for (var item in parsed_output)
+							{
+								var $row = $('<tr/>');
+								$row.append('<td>' + item + '</td>');
+								$row.append('<td>' + parsed_output[item].toFixed(2) + '</td>');
+								$table.append($row);
+							}
+						});
 					});
-				});
 
-				$flights.append($flight);
+					$flights.append($flight);
+				});
 			});
-		});
+		};
+
+		get_flight_logs();
 
 		module.$("#fb_logout").on('click', function()
 		{
@@ -119,11 +124,14 @@ module.exports = (function()
 
 		module.$('#upload_logs').on('click', function()
 		{
+			var total_uploads = 0;
 			$dragon_drop.find('table tbody tr').each(function()
 			{
 				var $row = $(this);
 				if ($row.prop('file_handle') != null)
 				{
+					total_uploads++;
+
 					var file = $row.prop('file_handle');
 					var header = new FileReader();
 					header.readAsText(file);
@@ -146,6 +154,13 @@ module.exports = (function()
 							data: JSON.stringify(params),
 							success: function(result)
 							{
+								total_uploads--;
+
+								if (total_uploads === 0)
+								{
+									get_flight_logs();
+								}
+
 								if (result.success === true)
 								{
 									$row.find('td:nth-child(3)').text('Success!');

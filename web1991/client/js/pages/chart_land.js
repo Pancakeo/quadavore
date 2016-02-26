@@ -69,7 +69,7 @@ module.exports = (function()
 								if (modules[item].type == 'value')
 								{
 									var $row = $('<tr/>');
-									$row.append('<td>' + item + '</td>');
+									$row.append('<td>' + modules[item].display_name + '</td>');
 
 									var nice_value = parsed_output[item];
 									if (typeof(nice_value) == "number")

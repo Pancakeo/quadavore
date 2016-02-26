@@ -5,13 +5,37 @@
 	<meta charset="utf-8"/>
 	<title>Quadavore Ultimate Delux v1.99.1</title>
 	<link id="favicon" rel="icon" type="image/png" href="/images/favicon-normal.png"/>
-	<link rel="stylesheet" type="text/css" href='quadavore.css?r=71'/>
+	<link rel="stylesheet" type="text/css" href='quadavore.css?r=84'/>
 </head>
 
 <body>
 
+<script>
+	window.fbAsyncInit = function()
+	{
+		FB.init({
+			appId: '482940125227189',
+			xfbml: true,
+			version: 'v2.5'
+		});
+	};
+
+	(function(d, s, id)
+	{
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id))
+		{
+			return;
+		}
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "//connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+</script>
+
 <script src="js/lib/jquery.js"></script>
-<script src="quadavore.js?r=18"></script>
+<script src="quadavore.js?r=31"></script>
 
 </body>
 </html>

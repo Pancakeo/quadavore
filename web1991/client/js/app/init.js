@@ -1,6 +1,9 @@
-(function() {
+(function()
+{
 	"use strict";
-	window.quadavore = {};
+	window.quadavore = {
+		medio_analytics: true
+	};
 
-	require('../pages/wup_find_login').init();
+	require('../pages/wup_find_login').load($('body'));
 })();

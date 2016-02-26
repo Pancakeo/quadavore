@@ -19,13 +19,13 @@ module.exports = function(grunt)
 		copy: {
 			build: {
 				cwd: 'client',
-				src: ['images/**', 'index.html', 'js/lib/*.js'],
+				src: ['images/**', '*.html', 'js/lib/*.js'],
 				dest: 'build',
 				expand: true
 			},
 			html: {
 				cwd: 'client',
-				src: ['html/**'],
+				src: ['html/**/*.html'],
 				dest: 'build',
 				expand: true
 			}
@@ -40,7 +40,7 @@ module.exports = function(grunt)
 		htmlmin: {
 			dev: {
 				cwd: 'client',
-				src: 'html/*.html',
+				src: 'html/**/*.html',
 				dest: 'build/',
 				expand: true
 			},
@@ -51,7 +51,7 @@ module.exports = function(grunt)
 					minifyCSS: true
 				},
 				cwd: 'client',
-				src: 'html/*.html',
+				src: 'html/**/*.html',
 				dest: 'build/',
 				expand: true
 			}
@@ -134,6 +134,6 @@ module.exports = function(grunt)
 	grunt.registerTask(
 		'release',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'jshint', 'copy:build', 'sass:prod', 'htmlmin:prod', 'browserify', 'concat', 'uglify']
+		['clean:build', 'jshint', 'copy:build', 'sass:prod', 'htmlmin:prod', 'browserify', 'uglify']
 	);
 };

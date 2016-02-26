@@ -11,6 +11,7 @@
     }
 })(function(CSV)
 {
+    console.log('parse!');
     return function(file, modules)
     {
         var rows = new CSV(file, { header: true}).parse();

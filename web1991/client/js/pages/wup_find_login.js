@@ -45,6 +45,7 @@ module.exports = (function()
 		});
 
 		window.quadavore.facebook_app_id = '482933888561146';
+
 		if (window.location.hostname == 'localhost')
 		{
 			window.quadavore.facebook_app_id = '482982265222975';

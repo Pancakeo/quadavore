@@ -71,7 +71,7 @@ module.exports = function(grunt)
 					compress: true
 				},
 				files: {
-					"build/quadavore.css": "client/scss/*.less"
+					"build/quadavore.css": "client/less/*.less"
 				}
 			}
 		},

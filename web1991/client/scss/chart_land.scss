@@ -1,0 +1,95 @@
+#chart_land
+{
+  #profile
+  {
+    margin-top: 20px;
+  }
+
+  #parsed_flight
+  {
+    table
+    {
+      border-collapse: collapse;
+      min-width: 400px;
+
+      thead tr
+      {
+        background: lightgrey;
+      }
+
+      tr:nth-child(even)
+      {
+        background: lightgrey;
+      }
+
+      th
+      {
+        text-align: left;
+      }
+
+      th, td
+      {
+        padding: 5px;
+        border: 1px #ccc solid;
+      }
+    }
+
+  }
+
+  #previous_flights_wrapper
+  {
+    margin-left: 5%;
+    width: 40%;
+    display: inline-block;
+    vertical-align: top;
+
+    .flight_link
+    {
+      cursor: pointer;
+      color: blue;
+    }
+  }
+
+  #dragon_drop
+  {
+    width: 40%;
+    display: inline-block;
+    vertical-align: top;
+
+    padding: 40px;
+    border: 1px #ccc solid;
+
+    #file_results
+    {
+      display: none;
+    }
+
+    #upload_logs
+    {
+      margin-top: 5px;
+    }
+
+    table
+    {
+      border-collapse: collapse;
+      min-width: 600px;
+
+      th
+      {
+        padding: 5px;
+        border: 1px #ccc solid;
+        text-align: left;
+      }
+      td
+      {
+        padding: 5px;
+        border: 1px #ccc solid;
+      }
+
+      td.error
+      {
+        color: red;
+      }
+    }
+  }
+}

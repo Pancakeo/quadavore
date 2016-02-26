@@ -13,6 +13,7 @@ module.exports = (function()
 					// Show next module.
 					FB.api('/me', function(profile)
 					{
+						window.quadavore.facebook_profile = profile;
 						module.$container.hide();
 						require('./chart_land').load($('body'));
 					});

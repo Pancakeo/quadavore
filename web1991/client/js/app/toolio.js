@@ -1,89 +1,128 @@
-// "TOOL-E-O". (although some vaguely looking I/O things might be in here.)
-module.exports = (function() {
-    "use strict";
-    var toolio = {};
+module.exports = (function()
+{
+	"use strict";
+	var toolio = {};
 
-    toolio.generate_id = function() {
-        var d = Date.now();
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
-        });
-    };
+	toolio.human_readable_filesize = function(size)
+	{
+		var unit = 'b';
+		var units = ['b', 'kb', 'mb', 'gb', 'tb', 'heh'];
 
-    toolio.array_to_list = function(arr) {
-        if (arr == null) {
-            throw "Null array";
-        }
+		for (var i = 0; i < units.length; i++)
+		{
+			unit = units[i];
 
-        if (arr.length === 0) {
-            return "(none)";
-        }
+			if (size <= 1024)
+			{
+				size = size.toFixed(1);
+				break;
+			}
 
-        var nice_array = "<ol>";
+			size /= 1024;
+		}
 
-        for (var i = 0; i < arr.length; i++) {
-            nice_array += "<li>" + arr[i] + "</li>";
-        }
 
-        nice_array += "</ol>";
-        return nice_array;
-    };
+		return size + ' ' + unit;
+	};
 
-    /* Fixed arrays are of a constant size and also don't accept duplicates. */
-    toolio.push_to_fixed_array = function(arr, value, max_size) {
-        if (max_size == null) {
-            max_size = 10;
-        }
+	toolio.generate_id = function()
+	{
+		var d = Date.now();
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c)
+		{
+			var r = (d + Math.random() * 16) % 16 | 0;
+			d = Math.floor(d / 16);
+			return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+		});
+	};
 
-        if (arr == null) {
-            throw "Null array";
-        }
-        if (max_size <= 0) {
-            throw "Max size <= 0";
-        }
+	toolio.array_to_list = function(arr)
+	{
+		if (arr == null)
+		{
+			throw "Null array";
+		}
 
-        // don't add again.
-        if (arr.indexOf(value) >= 0) {
-            return;
-        }
+		if (arr.length === 0)
+		{
+			return "(none)";
+		}
 
-        while (arr.length >= max_size) {
-            arr.shift();
-        }
+		var nice_array = "<ol>";
 
-        arr.push(value);
-    };
+		for (var i = 0; i < arr.length; i++)
+		{
+			nice_array += "<li>" + arr[i] + "</li>";
+		}
 
-    toolio.copy_object = function(obj) {
-        return JSON.parse(JSON.stringify(obj));
-    };
+		nice_array += "</ol>";
+		return nice_array;
+	};
 
-    toolio.string_to_array_buffer = function(str) {
-        var buf = new ArrayBuffer(str.length * 2);
-        var buf_view = new DataView(buf);
+	/* Fixed arrays are of a constant size and also don't accept duplicates. */
+	toolio.push_to_fixed_array = function(arr, value, max_size)
+	{
+		if (max_size == null)
+		{
+			max_size = 10;
+		}
 
-        for (var i = 0; i < str.length; i++) {
-            buf_view.setUint16(i * 2, str.charCodeAt(i), true);
-        }
+		if (arr == null)
+		{
+			throw "Null array";
+		}
+		if (max_size <= 0)
+		{
+			throw "Max size <= 0";
+		}
 
-        return buf;
-    };
+		// don't add again.
+		if (arr.indexOf(value) >= 0)
+		{
+			return;
+		}
 
-    toolio.blob_from_buffer = function(buffer, meta) {
-        var header = toolio.string_to_array_buffer(JSON.stringify(meta));
+		while (arr.length >= max_size)
+		{
+			arr.shift();
+		}
 
-        var header_length = new ArrayBuffer(4);    // 4 bytes = 32-bits.
-        new DataView(header_length).setUint32(0, header.byteLength, true); // explicit little endian
+		arr.push(value);
+	};
 
-        return new Blob([header_length, header, buffer]); // roll it up
-    };
+	toolio.copy_object = function(obj)
+	{
+		return JSON.parse(JSON.stringify(obj));
+	};
 
-    toolio.array_buffer_to_string = function(buf) {
-        return String.fromCharCode.apply(null, new Uint16Array(buf));
-    };
+	toolio.string_to_array_buffer = function(str)
+	{
+		var buf = new ArrayBuffer(str.length * 2);
+		var buf_view = new DataView(buf);
 
-    return toolio;
+		for (var i = 0; i < str.length; i++)
+		{
+			buf_view.setUint16(i * 2, str.charCodeAt(i), true);
+		}
+
+		return buf;
+	};
+
+	toolio.blob_from_buffer = function(buffer, meta)
+	{
+		var header = toolio.string_to_array_buffer(JSON.stringify(meta));
+
+		var header_length = new ArrayBuffer(4);    // 4 bytes = 32-bits.
+		new DataView(header_length).setUint32(0, header.byteLength, true); // explicit little endian
+
+		return new Blob([header_length, header, buffer]); // roll it up
+	};
+
+	toolio.array_buffer_to_string = function(buf)
+	{
+		return String.fromCharCode.apply(null, new Uint16Array(buf));
+	};
+
+	return toolio;
 })();
 

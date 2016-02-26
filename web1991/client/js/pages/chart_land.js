@@ -6,7 +6,7 @@ module.exports = (function()
 
 	// TODO - better way to go up to correct level.
 	var parse_thing = require('../../../../parse');
-	var parse_modules = require('../../../../modules');
+	var modules = require('../../../../modules');
 
 	module.init = function()
 	{
@@ -33,16 +33,37 @@ module.exports = (function()
 
 							$parsed_flight.find('#parsed_flight_name').text(name);
 
-							var parsed_output = parse_thing(result.csv_raw, parse_modules);
-							// console.log(parsed_output);
+							var parsed_output = parse_thing(result.csv_raw, modules);
 							var $table = $parsed_flight.find('table tbody').empty();
+
+							// -----------
+							var lat = modules.home_latitude.result();
+							var lng = modules.home_longitude.result();
+
+							var map = new google.maps.Map(document.getElementById('map'), {
+								center: {lat: lat, lng: lng},
+								zoom: 13
+								// mapTypeId: google.maps.MapTypeId.TERRAIN
+							});
+
+							var flight_plan = modules.flight_path.result();
+
+							var flightPath = new google.maps.Polyline({
+								path: flight_plan,
+								geodesic: true,
+								strokeColor: '#FF0000',
+								strokeOpacity: 1.0,
+								strokeWeight: 2
+							});
+
+							flightPath.setMap(map);
+
 
 							// ------------
 							var yAxis = [];
 							var series_all = [];
 							var series_count = 0;
 
-							var modules = parse_modules;
 							for (var item in modules)
 							{
 								if (modules[item].type == 'value')
@@ -237,6 +258,26 @@ module.exports = (function()
 
 		});
 
+		navigator.geolocation.getCurrentPosition(function(result)
+		{
+			window.quadavore.latitude = result.coords.latitude;
+			window.quadavore.longitude = result.coords.longitude;
+		});
+
+		window.initGoogleMaps = function()
+		{
+			var lat = window.quadavore.latitude || 37;
+			var lng = window.quadavore.longitude || -130;
+
+			module.google_maps_ready = true;
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 8,
+				center: {lat: lat, lng: lng}
+			});
+
+
+		};
+
 		module.$('#profile').text('Name: ' + window.quadavore.facebook_profile.name + ", User ID: " + window.quadavore.facebook_profile.id);
 	};
 
@@ -253,6 +294,7 @@ module.exports = (function()
 				return jQuery(sel, module.$container);
 			};
 
+			module.$container.append('<script src="https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY + '&callback=initGoogleMaps" async defer></script>');
 			module.init();
 		});
 

@@ -19,6 +19,11 @@
         {
             for (var module_name in modules)
             {
+                if (index === 0) {
+                    if (modules[module_name].init != undefined) {
+                        modules[module_name].init();
+                    }
+                }
                 if (modules[module_name].per_row != undefined)
                 {
                     modules[module_name].per_row(row, index);

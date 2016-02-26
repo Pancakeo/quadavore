@@ -19,6 +19,11 @@
             type: 'series',
             display_name: display_name,
             label_format: label_format || null,
+            init: function()
+            {
+                this.last_ms = 0;
+                this.series = [];
+            },
             per_row: function(row)
             {
                 var ms = parseInt(row['time(millisecond)']);
@@ -34,7 +39,7 @@
             }
         }
     };
-    
+
     return {
         avg_speed_after_takeoff: {
             speed_over_zero: false,
@@ -172,7 +177,6 @@
             display_name: 'Remaining Power (%)',
             last_row_val: 0,
             last_row: function(row) {
-                console.log(row);
                 this.last_row_val = row['remainPowerPercent'];
             },
             result: function() {
@@ -192,13 +196,61 @@
                 return this.sum / this.records;
             }
         },
+        home_latitude: {
+            val: 37,
+            display_name: 'Home Latitude',
+            last_row: function(row) {
+                this.val = row['home_latitude'];
+            },
+            result: function() {
+                return parseFloat(this.val);
+            }
+        },
+        home_longitude: {
+            val: -130,
+            display_name: 'Home Longitude',
+            last_row: function(row) {
+                this.val = row['home_longitude'];
+            },
+            result: function() {
+                return parseFloat(this.val);
+            }
+        },
+        flight_path: {
+            type: 'special',
+            coords: [],
+            display_name: 'Flight Path',
+            ms_resolution: 1000 * 3,
+            init: function() {
+                this.last_ms = 0;
+                this.coords = [];
+            },
+            per_row: function(row)
+            {
+                var ms = parseInt(row['time(millisecond)']);
+                if (this.last_ms == 0 || ms - this.last_ms >= this.ms_resolution)
+                {
+                    if (row['latitude'] != 0 && row['longitude'] != 0) {
+                        this.coords.push({
+                            lat: row['latitude'],
+                            lng: row['longitude']
+                        });
+                    }
+
+                    this.last_ms = ms;
+                }
+            },
+            result: function() {
+                return this.coords;
+            }
+        },
         speed_series: series_module('speed(mph)', 500, 'Speed', '{value}mph'),
         altitude_series: series_module('altitude(feet)', 500, 'Altitude', '{value}\''),
         distance_series: series_module('distance(feet)', 500, 'Distance', '{value}\''),
         battery_percent_series: series_module('remainPowerPercent', 500, 'Remaining Battery Power', '{value}%'),
-        satellites_series: series_module('satellites', 500, 'Satellites', '{value}')   
+        satellites_series: series_module('satellites', 500, 'Satellites', '{value}')
     };
-    
+
 });
     
 

@@ -36,7 +36,7 @@ node_modules
 .idea
 
 # api keys and what not
-secrets.txt
+secrets.js
 
 # Sample data
 quad_logs

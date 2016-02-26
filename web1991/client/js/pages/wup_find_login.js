@@ -36,18 +36,25 @@ module.exports = (function()
 
 		module.$("#fb_login").on('click', function()
 		{
+			$(this).prop('disabled', true);
 			FB.login(function(response)
 			{
 				facebook_login(response);
+				$(this).prop('disabled', false);
 			}, {scope: 'public_profile,email'});
 		});
 
+		window.quadavore.facebook_app_id = '482933888561146';
+		if (window.location.hostname == 'localhost')
+		{
+			window.quadavore.facebook_app_id = '482982265222975';
+		}
 
 		// Facebook SDK loading.
 		window.fbAsyncInit = function()
 		{
 			FB.init({
-				appId: '482982265222975',
+				appId: window.quadavore.facebook_app_id,
 				cookie: true,  // enable cookies to allow the server to access the session
 				xfbml: true,  // parse social plugins on this page
 				version: 'v2.5' // use graph api version 2.5

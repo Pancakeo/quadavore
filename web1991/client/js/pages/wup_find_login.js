@@ -51,6 +51,9 @@ module.exports = (function()
 			window.quadavore.facebook_app_id = '482982265222975';
 		}
 
+		alert('heh');
+		alert(window.quadavore.facebook_app_id);
+
 		// Facebook SDK loading.
 		window.fbAsyncInit = function()
 		{

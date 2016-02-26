@@ -199,6 +199,7 @@
         home_latitude: {
             val: 37,
             display_name: 'Home Latitude',
+            type: 'value',
             last_row: function(row) {
                 this.val = row['home_latitude'];
             },
@@ -209,6 +210,7 @@
         home_longitude: {
             val: -130,
             display_name: 'Home Longitude',
+            type: 'value',
             last_row: function(row) {
                 this.val = row['home_longitude'];
             },

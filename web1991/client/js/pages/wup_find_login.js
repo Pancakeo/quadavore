@@ -86,7 +86,7 @@ module.exports = (function()
 
 	module.load = function($parent_div)
 	{
-		$.get('html/pages/wup_find_login.html', function(html)
+		$.get('html/pages/wup_find_login.html?ts=' + Date.now(), function(html)
 		{
 			module.$container = $(html);
 			$parent_div.append(module.$container);

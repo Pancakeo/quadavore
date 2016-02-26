@@ -23,15 +23,17 @@ module.exports = (function()
 					{
 						var $parsed_flight = $("#parsed_flight");
 
-						if (result.success != true)
+						if (!result.success)
 						{
 							$parsed_flight.text('Error: ' + result.reason);
 							return;
 						}
 
+						$parsed_flight.find('#parsed_flight_name').text(name);
+
 						var parsed_output = parse_thing(result.csv_raw, parse_modules);
 						// console.log(parsed_output);
-						var $table = $parsed_flight.find('table tbody');
+						var $table = $parsed_flight.find('table tbody').empty();
 
 						for (var item in parsed_output)
 						{
@@ -172,7 +174,7 @@ module.exports = (function()
 
 	module.load = function($parent_div)
 	{
-		$.get('html/pages/chart_land.html', function(html)
+		$.get('html/pages/chart_land.html?ts=' + Date.now(), function(html)
 		{
 			module.$container = $(html);
 			$parent_div.append(module.$container);

@@ -150,7 +150,8 @@ app.put('/flight_log', function(req, res)
 
 });
 
-app.listen(1337, function()
+var port = 1991;
+app.listen(port, function()
 {
-	console.log('Quadavore is running on port 1337.');
+	console.log('Quadavore is running on port ' + port + '.');
 });

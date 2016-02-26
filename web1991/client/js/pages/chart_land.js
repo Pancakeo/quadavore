@@ -37,12 +37,59 @@ module.exports = (function()
 							// console.log(parsed_output);
 							var $table = $parsed_flight.find('table tbody').empty();
 
-							for (var item in parsed_output)
+							// ------------
+							var yAxis = [];
+							var series_all = [];
+							var series_count = 0;
+
+							var modules = parse_modules;
+							for (var item in modules)
 							{
-								var $row = $('<tr/>');
-								$row.append('<td>' + item + '</td>');
-								$row.append('<td>' + parsed_output[item].toFixed(2) + '</td>');
-								$table.append($row);
+								if (modules[item].type == 'value')
+								{
+									var $row = $('<tr/>');
+									$row.append('<td>' + item + '</td>');
+									$row.append('<td>' + parsed_output[item].toFixed(2) + '</td>');
+									$table.append($row);
+								}
+								else if (modules[item].type == 'series')
+								{
+									var axis_def = {
+										title: {
+											text: modules[item].display_name
+										}
+									};
+
+									if (modules[item].label_format != null)
+									{
+										axis_def.labels = {
+											format: modules[item].label_format
+										};
+									}
+									yAxis.push(axis_def);
+
+									var series = {
+										name: modules[item].display_name,
+										type: 'spline',
+										yAxis: series_count,
+										data: parsed_output[item]
+									};
+
+									series_all.push(series);
+									series_count++;
+								}
+							}
+
+
+							if (series_all.length > 0)
+							{
+								$('#chart').highcharts({
+									yAxis: yAxis,
+									xAxis: {
+										type: 'linear'
+									},
+									series: series_all
+								});
 							}
 						});
 					});

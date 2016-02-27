@@ -37,16 +37,16 @@ module.exports = (function()
 							var $table = $parsed_flight.find('table tbody').empty();
 
 							// -----------
-							var lat = modules.home_latitude.result();
-							var lng = modules.home_longitude.result();
+							var lat = parsed_output.home_latitude;
+							var lng = parsed_output.home_longitude;
 
 							var map = new google.maps.Map(document.getElementById('map'), {
 								center: {lat: lat, lng: lng},
-								zoom: 13
-								// mapTypeId: google.maps.MapTypeId.TERRAIN
+								zoom: 13,
+								mapTypeId: google.maps.MapTypeId.TERRAIN
 							});
 
-							var flight_plan = modules.flight_path.result();
+							var flight_plan = parsed_output.flight_path;
 
 							var flightPath = new google.maps.Polyline({
 								path: flight_plan,
@@ -296,7 +296,7 @@ module.exports = (function()
 				return jQuery(sel, module.$container);
 			};
 
-			module.$container.append('<script src="https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY + '&callback=initGoogleMaps" async defer></script>');
+			module.$container.append('<script src="//maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY + '&callback=initGoogleMaps" async defer></script>');
 			module.init();
 		});
 

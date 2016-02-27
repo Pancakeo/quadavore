@@ -111,8 +111,13 @@ module.exports = (function()
 
 							if (series_all.length > 0)
 							{
-                                $('#chart').highcharts().destroy();
-								$('#chart').highcharts({
+								var chart = module.$('#chart').highcharts();
+
+								if (chart != null) {
+									chart.destroy();
+								}
+
+								module.$('#chart').highcharts({
 									yAxis: yAxis,
 									xAxis: {
 										type: 'linear'

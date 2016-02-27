@@ -84,6 +84,10 @@ module.exports = function(grunt)
 			}
 		},
 		watch: {
+			options: {
+				// Use with Chrome's LiveReload extension: https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei
+				livereload: true
+			},
 			// Note: Doesn't catch changes to public/*.js
 			scripts: {
 				files: ['client/js/**/*.js'],

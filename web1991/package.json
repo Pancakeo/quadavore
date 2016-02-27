@@ -4,7 +4,7 @@
   "description": "Heh heh",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1",
   },
   "repository": {
     "type": "git",
@@ -23,16 +23,13 @@
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-htmlmin": "^0.6.0",
-    "grunt-contrib-jasmine": "^1.0.0",
     "grunt-contrib-jshint": "^0.12.0",
     "grunt-contrib-less": "^1.2.0",
-    "grunt-contrib-nodeunit": "^0.4.1",
     "grunt-contrib-uglify": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-refupdate": "^0.1.4",
-    "qunitjs": "^1.21.0"
   },
   "dependencies": {
-    "mocha": "^2.4.5"
+
   }
 }

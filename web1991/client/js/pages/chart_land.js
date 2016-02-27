@@ -111,6 +111,7 @@ module.exports = (function()
 
 							if (series_all.length > 0)
 							{
+                                $('#chart').highcharts().destroy();
 								$('#chart').highcharts({
 									yAxis: yAxis,
 									xAxis: {

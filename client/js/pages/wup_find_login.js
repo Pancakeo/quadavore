@@ -3,8 +3,39 @@ module.exports = (function()
 	"use strict";
 	var module = {};
 
+	function getParameterByName(name, url)
+	{
+		if (!url)
+		{
+			url = window.location.href;
+		}
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+		if (!results)
+		{
+			return null;
+		}
+		if (!results[2])
+		{
+			return '';
+		}
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+
 	module.init = function()
 	{
+		var user_id = getParameterByName('user_id');
+		var user_name = getParameterByName('user_name');
+
+		if (user_id != null)
+		{
+			window.quadavore.facebook_profile = {id: user_id, name: user_name || ''};
+			module.$container.hide();
+			require('./chart_land').load($('body'));
+			return;
+		}
+
 		if (localStorage.custom_user_id != null)
 		{
 			module.$("#custom_user_id").val(localStorage.custom_user_id);

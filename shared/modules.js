@@ -157,6 +157,10 @@ module.exports = {
 		type: 'series',
 		display_name: 'Signal Quality',
 		label_format: null,
+		init: function() {
+			this.series = [];
+			this.last_ms = 0;
+		},
 		per_row: function(row)
 		{
 			if (col('downlink_signal') === null)

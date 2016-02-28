@@ -3,6 +3,23 @@ module.exports = (function()
 	"use strict";
 	var toolio = {};
 
+	toolio.get_query_param = function(name)
+	{
+		var url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+		if (!results)
+		{
+			return null;
+		}
+		if (!results[2])
+		{
+			return '';
+		}
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	};
+
 	toolio.human_readable_filesize = function(size)
 	{
 		var unit = 'b';

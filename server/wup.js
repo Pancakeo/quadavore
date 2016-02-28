@@ -101,6 +101,8 @@ app.put('/flight_log', function(req, res)
 			success: false,
 			reason: 'bad file name'
 		});
+
+		return;
 	}
 	// TODO - maybe check indexOf ('.csv') here?
 

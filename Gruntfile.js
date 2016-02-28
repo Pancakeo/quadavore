@@ -90,7 +90,7 @@ module.exports = function(grunt)
 			},
 			// Note: Doesn't catch changes to public/*.js
 			scripts: {
-				files: ['client/js/**/*.js'],
+				files: ['client/js/**/*.js', 'shared/*.js'],
 				tasks: ['browserify:client']
 			},
 			static_html: {

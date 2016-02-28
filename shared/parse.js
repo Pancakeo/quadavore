@@ -15,7 +15,7 @@
     {
         var rows = new CSV(file, { header: true}).parse();
         
-        var modules = {}
+        var modules = {};
         Object.keys(module_definitions).forEach(function(mod)
         {
             modules[mod] = Object.create(module_definitions[mod]);

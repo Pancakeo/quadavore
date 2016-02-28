@@ -5,8 +5,8 @@ module.exports = (function()
 	var toolio = require('../app/toolio');
 
 	// TODO - better way to go up to correct level.
-	var parse_thing = require('../../../../parse');
-	var modules = require('../../../../modules');
+	var parse_thing = require('../../../shared/parse');
+	var modules = require('../../../shared/modules');
 
 	module.init = function()
 	{

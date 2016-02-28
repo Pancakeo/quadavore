@@ -10,9 +10,11 @@ module.exports = (function()
 
 	module.init = function()
 	{
+		history.pushState({}, "Quadavore - Chart Land", "?user_id=" + window.quadavore.profile.id);
+
 		var get_flight_logs = function()
 		{
-			$.get('/flight_logs', {user_id: window.quadavore.facebook_profile.id}, function(result)
+			$.get('/flight_logs', {user_id: window.quadavore.profile.id}, function(result)
 			{
 				var $flights = $("#previous_flights").empty();
 
@@ -21,7 +23,7 @@ module.exports = (function()
 					var $flight = $('<div class="flight_link">' + name + '</div>');
 					$flight.on('click', function()
 					{
-						$.get('/flight_log', {flight_name: name, user_id: window.quadavore.facebook_profile.id}, function(result)
+						$.get('/flight_log', {flight_name: name, user_id: window.quadavore.profile.id}, function(result)
 						{
 							var $parsed_flight = $("#parsed_flight");
 
@@ -113,7 +115,8 @@ module.exports = (function()
 							{
 								var chart = module.$('#chart').highcharts();
 
-								if (chart != null) {
+								if (chart != null)
+								{
 									chart.destroy();
 								}
 
@@ -221,8 +224,8 @@ module.exports = (function()
 					{
 
 						var params = {
-							user_id: window.quadavore.facebook_profile.id,
-							user_name: window.quadavore.facebook_profile.name,
+							user_id: window.quadavore.profile.id,
+							user_name: window.quadavore.profile.name,
 							file_name: file.name,
 							transfer_id: toolio.generate_id(),
 							csv_raw: event.target.result
@@ -286,7 +289,7 @@ module.exports = (function()
 
 		};
 
-		module.$('#profile').text('Name: ' + window.quadavore.facebook_profile.name + ", User ID: " + window.quadavore.facebook_profile.id);
+		module.$('#profile').text("User ID: " + window.quadavore.profile.id);
 	};
 
 

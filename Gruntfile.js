@@ -18,8 +18,7 @@ module.exports = function(grunt)
 		},
 		copy: {
 			build: {
-				cwd: 'client',
-				src: ['images/**', '*.html', 'js/lib/*.js'],
+				src: ['client/images/**', 'client/*.html', 'client/js/lib/*.js', 'release/*'],
 				dest: 'build',
 				expand: true
 			},

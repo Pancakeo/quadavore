@@ -17,8 +17,14 @@ module.exports = function(grunt)
 			}
 		},
 		copy: {
+			android: {
+				src: ['release/*'],
+				dest: 'build',
+				expand: true
+			},
 			build: {
-				src: ['client/images/**', 'client/*.html', 'client/js/lib/*.js', 'release/*'],
+				cwd: 'client',
+				src: ['*.html', 'images/**', 'js/lib/*.js'],
 				dest: 'build',
 				expand: true
 			},
@@ -132,12 +138,12 @@ module.exports = function(grunt)
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'refupdate', 'jshint', 'copy:build', 'less:dev', 'htmlmin:dev', 'browserify']
+		['clean:build', 'refupdate', 'jshint', 'copy:build', 'copy:android', 'less:dev', 'htmlmin:dev', 'browserify']
 	);
 
 	grunt.registerTask(
 		'release',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'jshint', 'copy:build', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
+		['clean:build', 'jshint', 'copy:build', 'copy:android', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
 	);
 };

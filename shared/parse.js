@@ -41,13 +41,12 @@ module.exports = function(file, module_definitions)
 	{
 		if (modules[module_name].type != 'not_supported')
 		{
-			output[module_name] = modules[module_name].result();
+			output[module_name] = modules[module_name].result(output);
 		}
 		else
 		{
 			output[module_name] = 'not_supported';
 		}
-			
 	}
 
 	return output;

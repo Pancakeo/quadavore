@@ -55,6 +55,27 @@ var col = function(id)
 	return columns[columns.current][id];
 }
 
+var distance = function(lat1, lon1, lat2, lon2, unit) {
+    var radlat1 = Math.PI * lat1/180;
+    var radlat2 = Math.PI * lat2/180;
+    var theta = lon1-lon2;
+    var radtheta = Math.PI * theta/180;
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist) * 180/Math.PI * 60 * 1.1515;
+    
+    if (unit == "km") 
+    { 
+        dist = dist * 1.609344;
+    }
+    
+    return dist;
+}
+
+
+// Module types:
+// series - result returns an array of values for use in a chart or other visualization
+// value - result returns a single literal value for the entire flight record
+// special - result returns a value that is not used in any automatic way
 
 var series_module = function(series_name, ms_resolution, display_name, label_format)
 {
@@ -309,12 +330,12 @@ module.exports = {
 		records: 0,
 		sum: 0,
 		per_row: function(row, index) {
-			if (col('throttle') === null)
+            if (col('throttle') === null)
 			{
 				this.type = 'not_supported';
 				return;
 			}
-			this.sum += row[col('rc_throttle')];
+			this.sum += row[col('throttle')];
 			this.records++;
 		},
 		result: function() {
@@ -385,7 +406,33 @@ module.exports = {
 	altitude_series: series_module('altitude_feet', 500, 'Altitude', '{value}\''),
 	distance_series: series_module('distance_feet', 500, 'Distance', '{value}\''),
 	battery_percent_series: series_module('remaining_power', 500, 'Remaining Battery Power', '{value}%'),
-	satellites_series: series_module('satellites', 500, 'Satellites', '{value}')   
+	satellites_series: series_module('satellites', 500, 'Satellites', '{value}'),
+    // After this point come post-processing values that require all previous results to already exist
+    total_distance:
+    {
+        type: 'value',
+        display_name: 'Total Distance Traveled (miles)',
+        result: function(results)
+        {
+            var path = results['flight_path'];
+            var dist = 0;
+            var prev_point = null;
+
+            for (var i = 0; i < path.length; i++)
+            {
+                var cur_point = path[i];
+                if (prev_point !== null)
+                {
+                    dist += distance(prev_point.lat, prev_point.lng, cur_point.lat, cur_point.lng, 'm');  
+                }
+                prev_point = cur_point;
+            }
+            return dist;
+
+        }
+
+    }
+
 };
 	
 

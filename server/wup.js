@@ -7,11 +7,13 @@ var fs = require('fs');
 
 var web_root = require('path').join(__dirname, '..', 'build');
 var bodyParser = require('body-parser');
+var compress = require('compression');
 
 var ROOT_LOG_FOLDER = 'quad_logs';
 
 app.use(express.static(web_root));
 app.use(bodyParser.json({limit: '50mb'}));
+app.use(compress());
 
 try
 {

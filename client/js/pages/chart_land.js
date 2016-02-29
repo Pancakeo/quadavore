@@ -3,7 +3,7 @@ module.exports = (function()
 	"use strict";
 	var module = {};
 	var toolio = require('../app/toolio');
-	var highcharts = require('highcharts');
+	var Highcharts = require('highcharts');
 	var $ = require('jquery');
 
 	// TODO - better way to go up to correct level.
@@ -121,14 +121,9 @@ module.exports = (function()
 
 							if (series_all.length > 0)
 							{
-								var chart = module.$('#chart').highcharts();
-
-								if (chart != null)
-								{
-									chart.destroy();
-								}
-
-								module.$('#chart').highcharts({
+								// The selector.highcharts() method doesn't seem to work when
+								// highcharts is included as a package.json module.
+								Highcharts.chart(module.$("#chart")[0], {
 									yAxis: yAxis,
 									xAxis: {
 										type: 'linear'

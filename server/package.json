@@ -5,6 +5,7 @@
   "main": "wup.js",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "compression": "^1.6.1",
     "express": "^4.13.4",
     "multer": "^1.1.0",
     "node-uuid": "^1.4.7"

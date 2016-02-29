@@ -69,7 +69,7 @@ app.get('/flight_log', function(req, res)
 				return;
 			}
 
-			res.json({success: true, csv_raw: result});
+			res.json({success: true, csv_raw: result, file_name: flight_name});
 		});
 	}
 	catch (e)

@@ -3,6 +3,7 @@ module.exports = (function()
 	"use strict";
 	var module = {};
 	var toolio = require('../app/toolio');
+	var $ = require('jquery');
 
 	module.init = function()
 	{
@@ -50,7 +51,7 @@ module.exports = (function()
 
 			module.$ = function(sel)
 			{
-				return jQuery(sel, module.$container);
+				return $(sel, module.$container);
 			};
 
 			module.init();

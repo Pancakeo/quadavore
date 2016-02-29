@@ -3,6 +3,8 @@ module.exports = (function()
 	"use strict";
 	var module = {};
 	var toolio = require('../app/toolio');
+	var highcharts = require('highcharts');
+	var $ = require('jquery');
 
 	// TODO - better way to go up to correct level.
 	var parse_thing = require('../../../shared/parse');
@@ -29,7 +31,13 @@ module.exports = (function()
 
 							if (!result.success)
 							{
-								$parsed_flight.text('Error: ' + result.reason);
+								alert('Error: ' + result.reason);
+								return;
+							}
+
+							if (result.file_name && result.file_name.toLowerCase().indexOf('.txt') >= 0)
+							{
+								alert('Error: TXT files are not supported (yet).');
 								return;
 							}
 
@@ -302,7 +310,7 @@ module.exports = (function()
 
 			module.$ = function(sel)
 			{
-				return jQuery(sel, module.$container);
+				return $(sel, module.$container);
 			};
 
 			module.$container.append('<script src="//maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY + '&callback=initGoogleMaps" async defer></script>');

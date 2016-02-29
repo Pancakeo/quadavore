@@ -8,18 +8,18 @@ var fs = require('fs');
 var web_root = require('path').join(__dirname, '..', 'build');
 var bodyParser = require('body-parser');
 
-var ROOT_CSV_FOLDER = 'quad_logs';
+var ROOT_LOG_FOLDER = 'quad_logs';
 
 app.use(express.static(web_root));
 app.use(bodyParser.json({limit: '50mb'}));
 
 try
 {
-	fs.statSync(ROOT_CSV_FOLDER);
+	fs.statSync(ROOT_LOG_FOLDER);
 }
 catch (e)
 {
-	var dir_name = ROOT_CSV_FOLDER;
+	var dir_name = ROOT_LOG_FOLDER;
 	fs.mkdirSync(dir_name);
 	console.log('Created folder ' + dir_name);
 }
@@ -27,7 +27,7 @@ catch (e)
 app.get('/flight_logs', function(req, res)
 {
 	var user_id = req.query.user_id;
-	var user_folder = './' + ROOT_CSV_FOLDER + '/' + user_id;
+	var user_folder = './' + ROOT_LOG_FOLDER + '/' + user_id;
 
 	try
 	{
@@ -38,7 +38,8 @@ app.get('/flight_logs', function(req, res)
 			res.json({
 				flight_logs: result.filter(function(file)
 				{
-					return file.toLowerCase().indexOf('.csv') >= 0;
+					return file.toLowerCase().indexOf('.csv') >= 0 ||
+						file.toLowerCase().indexOf('.txt') >= 0;
 				})
 			});
 		})
@@ -55,7 +56,7 @@ app.get('/flight_log', function(req, res)
 {
 	var user_id = req.query.user_id;
 	var flight_name = req.query.flight_name;
-	var path_to_flight = './' + ROOT_CSV_FOLDER + '/' + user_id + '/' + flight_name;
+	var path_to_flight = './' + ROOT_LOG_FOLDER + '/' + user_id + '/' + flight_name;
 
 	try
 	{
@@ -106,7 +107,7 @@ app.put('/flight_log', function(req, res)
 	}
 	// TODO - maybe check indexOf ('.csv') here?
 
-	var user_folder = './' + ROOT_CSV_FOLDER + '/' + user_id;
+	var user_folder = './' + ROOT_LOG_FOLDER + '/' + user_id;
 
 	try
 	{

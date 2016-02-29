@@ -9,6 +9,13 @@ module.exports = function(grunt)
 			client: {
 				src: ['client/js/app/init.js'],
 				dest: 'build/quadavore.js'
+			},
+			vendor: {
+				src: [],
+				dest: 'build/external_libraries.js',
+				options: {
+					require: ['jquery', 'highcharts']
+				}
 			}
 		},
 		clean: {
@@ -109,6 +116,9 @@ module.exports = function(grunt)
 		},
 		uglify: {
 			prod: {
+				options: {
+					screwIE8: true
+				},
 				files: {
 					'build/quadavore.js': ['build/quadavore.js']
 				}

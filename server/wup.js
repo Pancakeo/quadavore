@@ -63,16 +63,7 @@ app.get('/flight_log', function(req, res)
 	try
 	{
 		fs.statSync(path_to_flight);
-		fs.readFile(path_to_flight, 'utf8', function(err, result)
-		{
-			if (err != null)
-			{
-				res.json({success: false, reason: "IO error"});
-				return;
-			}
-
-			res.json({success: true, csv_raw: result, file_name: flight_name});
-		});
+		res.download(path_to_flight);
 	}
 	catch (e)
 	{

@@ -29,21 +29,9 @@ module.exports = (function()
 						{
 							var $parsed_flight = $("#parsed_flight");
 
-							if (!result.success)
-							{
-								alert('Error: ' + result.reason);
-								return;
-							}
-
-							if (result.file_name && result.file_name.toLowerCase().indexOf('.txt') >= 0)
-							{
-								alert('Error: TXT files are not supported (yet).');
-								return;
-							}
-
 							$parsed_flight.find('#parsed_flight_name').text(name);
 
-							var parsed_output = parse_thing(result.csv_raw, modules);
+							var parsed_output = parse_thing(result, modules);
 							var $table = $parsed_flight.find('table tbody').empty();
 
 							// -----------

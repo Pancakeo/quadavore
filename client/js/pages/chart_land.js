@@ -208,53 +208,48 @@ module.exports = (function()
 					total_uploads++;
 
 					var file = $row.prop('file_handle');
-					var header = new FileReader();
-					header.readAsText(file);
 
-					header.onload = function(event)
-					{
+					var data = new FormData();
+					data.append('user_id', window.quadavore.profile.id);
+					data.append('user_name', window.quadavore.profile.name || '');
+					data.append('transfer_id', toolio.generate_id());
+					data.append('file_name', file.name);
+					data.append('uploaded_file', file);
 
-						var params = {
-							user_id: window.quadavore.profile.id,
-							user_name: window.quadavore.profile.name,
-							file_name: file.name,
-							transfer_id: toolio.generate_id(),
-							csv_raw: event.target.result
-						};
+					$row.find('td:nth-child(3)').text('Uploading...');
 
-						$row.find('td:nth-child(3)').text('Uploading...');
+					$.ajax({
+						type: "PUT",
+						url: '/flight_log',
+						contentType: false,
+						processData: false,
+						data: data,
+						success: function(result)
+						{
+							total_uploads--;
 
-						$.ajax({
-							type: "PUT",
-							url: '/flight_log',
-							contentType: "application/json",
-							data: JSON.stringify(params),
-							success: function(result)
+							if (total_uploads === 0)
 							{
-								total_uploads--;
-
-								if (total_uploads === 0)
-								{
-									get_flight_logs();
-								}
-
-								if (result.success === true)
-								{
-									$row.find('td:nth-child(3)').text('Success!');
-								}
-								else
-								{
-									$row.find('td:nth-child(3)').addClass('error').text(result.reason);
-								}
-
-							},
-							error: function(result)
-							{
-
+								get_flight_logs();
 							}
 
-						});
-					};
+							if (result.success === true)
+							{
+								$row.find('td:nth-child(3)').text('Success!');
+							}
+							else
+							{
+								$row.find('td:nth-child(3)').addClass('error').text(result.reason);
+							}
+
+						},
+						error: function(result)
+						{
+
+						}
+
+					});
+
 				}
 			});
 

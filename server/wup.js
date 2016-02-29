@@ -9,6 +9,9 @@ var web_root = require('path').join(__dirname, '..', 'build');
 var bodyParser = require('body-parser');
 var compress = require('compression');
 
+var multer = require('multer'); // v1.0.5
+var upload = multer(); // for parsing multipart/form-data
+
 var ROOT_LOG_FOLDER = 'quad_logs';
 
 app.use(express.static(web_root));
@@ -40,8 +43,8 @@ app.get('/flight_logs', function(req, res)
 			res.json({
 				flight_logs: result.filter(function(file)
 				{
-					return file.toLowerCase().indexOf('.csv') >= 0 ||
-						file.toLowerCase().indexOf('.txt') >= 0;
+					return file.toLowerCase().indexOf('.csv') >= 0;
+					//file.toLowerCase().indexOf('.txt') >= 0;
 				})
 			});
 		})
@@ -71,14 +74,15 @@ app.get('/flight_log', function(req, res)
 	}
 });
 
-app.put('/flight_log', function(req, res)
+app.put('/flight_log', upload.single('uploaded_file'), function(req, res)
 {
 	var user_id = req.body.user_id;
 	var user_name = req.body.user_name;
-	var csv_raw = req.body.csv_raw;
 	var file_name = req.body.file_name;
 
-	if (csv_raw == null || csv_raw.trim() == '')
+	var file = req.file;
+
+	if (file == null || file.size <= 0)
 	{
 		res.json({
 			transfer_id: req.body.transfer_id,
@@ -123,7 +127,7 @@ app.put('/flight_log', function(req, res)
 		fs.writeFileSync(user_folder + '/meta.txt', 'Name: ' + user_name);
 	}
 
-	fs.writeFile('./' + user_folder + '/' + file_name, csv_raw, function(err, result)
+	fs.writeFile('./' + user_folder + '/' + file_name, file.buffer, function(err, result)
 	{
 		if (err != null)
 		{

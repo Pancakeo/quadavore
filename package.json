@@ -33,6 +33,7 @@
     "comma-separated-values": "~3.6.4",
     "highcharts": "^4.2.3",
     "jquery": "^2.2.1",
-    "moment": "~2.11.2"
+    "moment": "~2.11.2",
+    "wupfindui": "markle12/wupfindui"
   }
 }

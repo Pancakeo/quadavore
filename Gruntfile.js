@@ -14,7 +14,7 @@ module.exports = function(grunt)
 				src: [],
 				dest: 'build/external_libraries.js',
 				options: {
-					require: ['jquery', 'highcharts']
+					require: ['jquery', 'highcharts', 'wupfindui']
 				}
 			}
 		},
@@ -40,6 +40,13 @@ module.exports = function(grunt)
 				src: ['html/**/*.html'],
 				dest: 'build',
 				expand: true
+			},
+			third_party_images: {
+				expand: true,
+				src: 'node_modules/*/css/images/**',
+				dest: 'build/images/',
+				flatten: true,
+				filter: 'isFile'
 			}
 		},
 		jshint: {
@@ -74,7 +81,8 @@ module.exports = function(grunt)
 					ieCompat: false
 				},
 				files: {
-					"build/quadavore.css": "client/less/*.less"
+					"build/quadavore.css": "client/less/*.less",
+					"build/external.css": "node_modules/*/css/*.css"
 				}
 			},
 			prod: {
@@ -148,7 +156,7 @@ module.exports = function(grunt)
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'refupdate', 'jshint', 'copy:build', 'copy:android', 'less:dev', 'htmlmin:dev', 'browserify']
+		['clean:build', 'refupdate', 'jshint', 'copy:build', 'copy:android', 'copy:third_party_images', 'less:dev', 'htmlmin:dev', 'browserify']
 	);
 
 	grunt.registerTask(

@@ -99,7 +99,7 @@ module.exports = function(grunt)
 			update_index: {
 				options: {
 					inputFile: "build/index.html",
-					regex: /\?r=(.*)/g,
+					regex: /\?r=(random_string)/g,
 					random: true
 				}
 			}

@@ -98,8 +98,9 @@ module.exports = function(grunt)
 		refupdate: {
 			update_index: {
 				options: {
-					inputFile: "client/index.html",
-					regex: /\?r=([0-9]+)/g
+					inputFile: "build/index.html",
+					regex: /\?r=(.*)/g,
+					random: true
 				}
 			}
 		},
@@ -156,12 +157,12 @@ module.exports = function(grunt)
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'refupdate', 'jshint', 'copy:build', 'copy:android', 'copy:third_party_images', 'less:dev', 'htmlmin:dev', 'browserify']
+		['clean:build', 'jshint', 'copy:build', 'copy:android', 'copy:third_party_images', 'refupdate', 'less:dev', 'htmlmin:dev', 'browserify']
 	);
 
 	grunt.registerTask(
 		'release',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'jshint', 'copy:build', 'copy:android', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
+		['clean:build', 'jshint', 'copy:build', 'copy:android', 'refupdate', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
 	);
 };

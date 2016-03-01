@@ -4,6 +4,7 @@
 var express = require('express');
 var app = express();
 var fs = require('fs');
+var zlib = require('zlib');
 
 var web_root = require('path').join(__dirname, '..', 'build');
 var bodyParser = require('body-parser');
@@ -79,7 +80,7 @@ app.put('/flight_log', upload.single('uploaded_file'), function(req, res)
 	var user_id = req.body.user_id;
 	var user_name = req.body.user_name;
 	var file_name = req.body.file_name;
-
+	var is_gzip = req.body.is_gzip;
 	var file = req.file;
 
 	if (file == null || file.size <= 0)
@@ -103,7 +104,6 @@ app.put('/flight_log', upload.single('uploaded_file'), function(req, res)
 		return;
 	}
 	// TODO - maybe check indexOf ('.csv') here?
-
 	var user_folder = './' + ROOT_LOG_FOLDER + '/' + user_id;
 
 	try
@@ -127,25 +127,50 @@ app.put('/flight_log', upload.single('uploaded_file'), function(req, res)
 		fs.writeFileSync(user_folder + '/meta.txt', 'Name: ' + user_name);
 	}
 
-	fs.writeFile('./' + user_folder + '/' + file_name, file.buffer, function(err, result)
+	var write_file = function(buffer)
 	{
-		if (err != null)
+		fs.writeFile('./' + user_folder + '/' + file_name, buffer, function(err, result)
 		{
-			console.log(err);
+			if (err != null)
+			{
+				console.log(err);
+				res.json({
+					transfer_id: req.body.transfer_id,
+					success: false,
+					reason: 'File write error'
+				});
+
+				return;
+			}
+
 			res.json({
 				transfer_id: req.body.transfer_id,
-				success: false,
-				reason: 'File write error'
+				success: true
 			});
-
-			return;
-		}
-
-		res.json({
-			transfer_id: req.body.transfer_id,
-			success: true
 		});
-	});
+	};
+
+	if (is_gzip === undefined)
+	{
+		write_file(file.buffer);
+	} else
+	{
+		zlib.gunzip(file.buffer, function(err, buffer)
+		{
+			if (err != null)
+			{
+				res.json({
+					transfer_id: req.body.transfer_id,
+					success: false,
+					reason: 'File encoding error'
+				});
+
+				return;
+			}
+
+			write_file(buffer);
+		});
+	}
 
 
 });

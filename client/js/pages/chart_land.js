@@ -5,6 +5,8 @@ module.exports = (function()
 	var toolio = require('../app/toolio');
 	var Highcharts = require('highcharts');
 	var $ = require('jquery');
+	var wfui = require('wupfindui');
+	wfui.jquery_attach($);
 
 	// TODO - better way to go up to correct level.
 	var parse_thing = require('../../../shared/parse');
@@ -25,6 +27,8 @@ module.exports = (function()
 					var $flight = $('<div class="flight_link">' + name + '</div>');
 					$flight.on('click', function()
 					{
+						$flight.parent().find('.active').removeClass('active');
+						$flight.addClass('active');
 						$.get('/flight_log', {flight_name: name, user_id: window.quadavore.profile.id}, function(result)
 						{
 							var $parsed_flight = $("#parsed_flight");
@@ -141,119 +145,137 @@ module.exports = (function()
 
 		module.$('#upload_logs').prop('disabled', true);
 
-		var $dragon_drop = module.$('#dragon_drop');
-		$dragon_drop.on('dragenter', function(e)
+		module.$('#upload').on('click', function()
 		{
-			e.stopPropagation();
-			e.preventDefault();
-		});
-
-		$dragon_drop.on('dragover', function(e)
-		{
-			e.stopPropagation();
-			e.preventDefault();
-		});
-
-		$dragon_drop.on('drop', function(e)
-		{
-			e.stopPropagation();
-			e.preventDefault();
-
-			module.$('#help_text').hide();
-			module.$('#upload_logs').prop('disabled', true);
-
-			var dt = e.originalEvent.dataTransfer;
-			var $table = $dragon_drop.find('table tbody').empty();
-
-			var some_valid_entries = false;
-
-			for (var i = 0; i < dt.files.length; i++)
-			{
-				var file = dt.files[i];
-
-				if (file.name.toLowerCase().indexOf('.csv') == -1)
+			var dialog = $('#upload_dialog').clone().wfdialog({
+				title: 'Upload Flight Logs',
+				on_open: function()
 				{
-					$row = $('<tr/>');
-					$row.append('<td class="error" colspan="100%">Not CSV: ' + file.name + '</td>');
-					$table.append($row);
-					continue;
-				}
+					var $c = $(this.content);
+					var $dragon_drop = $c.find('#dragon_drop');
 
-				var $row = $('<tr/>');
-				$row.append('<td>' + file.name + '</td>');
-				$row.append('<td>' + toolio.human_readable_filesize(file.size) + '</td>');
-				$row.append('<td>&nbsp;</td>');
-				some_valid_entries = true;
-
-				$row.prop('file_handle', file);
-				$table.append($row);
-			}
-
-			if (some_valid_entries)
-			{
-				module.$('#upload_logs').prop('disabled', false);
-			}
-
-			$dragon_drop.find('#file_results').show();
-		});
-
-		module.$('#upload_logs').on('click', function()
-		{
-			var total_uploads = 0;
-			$dragon_drop.find('table tbody tr').each(function()
-			{
-				var $row = $(this);
-				if ($row.prop('file_handle') != null)
-				{
-					total_uploads++;
-
-					var file = $row.prop('file_handle');
-
-					var data = new FormData();
-					data.append('user_id', window.quadavore.profile.id);
-					data.append('user_name', window.quadavore.profile.name || '');
-					data.append('transfer_id', toolio.generate_id());
-					data.append('file_name', file.name);
-					data.append('uploaded_file', file);
-
-					$row.find('td:nth-child(3)').text('Uploading...');
-
-					$.ajax({
-						type: "PUT",
-						url: '/flight_log',
-						contentType: false,
-						processData: false,
-						data: data,
-						success: function(result)
-						{
-							total_uploads--;
-
-							if (total_uploads === 0)
-							{
-								get_flight_logs();
-							}
-
-							if (result.success === true)
-							{
-								$row.find('td:nth-child(3)').text('Success!');
-							}
-							else
-							{
-								$row.find('td:nth-child(3)').addClass('error').text(result.reason);
-							}
-
-						},
-						error: function(result)
-						{
-
-						}
-
+					$dragon_drop.on('dragenter', function(e)
+					{
+						e.stopPropagation();
+						e.preventDefault();
 					});
 
-				}
-			});
+					$dragon_drop.on('dragover', function(e)
+					{
+						e.stopPropagation();
+						e.preventDefault();
+					});
 
+					$dragon_drop.on('drop', function(e)
+					{
+						e.stopPropagation();
+						e.preventDefault();
+
+						$dragon_drop.find('#help_text').hide();
+
+						var dt = e.originalEvent.dataTransfer;
+						var $table = $dragon_drop.find('table tbody').empty();
+
+						var some_valid_entries = false;
+
+						for (var i = 0; i < dt.files.length; i++)
+						{
+							var file = dt.files[i];
+
+							if (file.name.toLowerCase().indexOf('.csv') == -1)
+							{
+								$row = $('<tr/>');
+								$row.append('<td class="error" colspan="100%">Not CSV: ' + file.name + '</td>');
+								$table.append($row);
+								continue;
+							}
+
+							var $row = $('<tr/>');
+							$row.append('<td>' + file.name + '</td>');
+							$row.append('<td>' + toolio.human_readable_filesize(file.size) + '</td>');
+							$row.append('<td>&nbsp;</td>');
+							some_valid_entries = true;
+
+							$row.prop('file_handle', file);
+							$table.append($row);
+						}
+
+						if (some_valid_entries)
+						{
+							module.$('#upload_logs').prop('disabled', false);
+						}
+
+						$dragon_drop.find('#file_results').show();
+					});
+				},
+				modal: true,
+				buttons: {
+					'Upload': function()
+					{
+						var total_uploads = 0;
+						var $dragon_drop = $(dialog.content).find('#dragon_drop');
+
+						$dragon_drop.find('table tbody tr').each(function()
+						{
+							var $row = $(this);
+							if ($row.prop('file_handle') != null)
+							{
+								total_uploads++;
+
+								var file = $row.prop('file_handle');
+
+								var data = new FormData();
+								data.append('user_id', window.quadavore.profile.id);
+								data.append('user_name', window.quadavore.profile.name || '');
+								data.append('transfer_id', toolio.generate_id());
+								data.append('file_name', file.name);
+								data.append('uploaded_file', file);
+
+								$row.find('td:nth-child(3)').text('Uploading...');
+
+								$.ajax({
+									type: "PUT",
+									url: '/flight_log',
+									contentType: false,
+									processData: false,
+									data: data,
+									success: function(result)
+									{
+										total_uploads--;
+
+										if (total_uploads === 0)
+										{
+											get_flight_logs();
+											$(dialog.button_bar).find('button').remove();
+										}
+
+										if (result.success === true)
+										{
+											$row.find('td:nth-child(3)').text('Success!');
+										}
+										else
+										{
+											$row.find('td:nth-child(3)').addClass('error').text(result.reason);
+										}
+
+									},
+									error: function(result)
+									{
+
+									}
+
+								});
+
+							}
+						});
+					}
+				},
+				appendTo: module.$container[0]
+			});
+			console.log(dialog);
 		});
+
+
 
 		navigator.geolocation.getCurrentPosition(function(result)
 		{

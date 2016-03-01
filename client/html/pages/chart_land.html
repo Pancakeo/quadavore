@@ -1,48 +1,52 @@
 <div id="chart_land">
-	<h3 style="margin-bottom: 5px; margin-top: 5px;">Quadavore - Chart Land</h3>
-	<div id="profile"></div>
+	<div style='display: none'>
+		<div id='upload_dialog'>
+			<div id="dragon_drop">
+				<div id="help_text">Drag logs here!</div>
 
-	<div id="dragon_drop">
-		<span id="help_text">Drag logs here!</span>
-
-		<div id="file_results">
-			<table>
-				<thead>
-				<tr>
-					<th>Filename</th>
-					<th>Size</th>
-					<th>Status</th>
-				</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
-			<button id="upload_logs">Upload Logs</button>
-
+				<div id="file_results">
+					<table>
+						<thead>
+						<tr>
+							<th>Filename</th>
+							<th>Size</th>
+							<th>Status</th>
+						</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<div id="previous_flights_wrapper">
-		Previous flights:
-		<div id="previous_flights"></div>
-	</div>
+	<div id='top_container'>
+		<div id='meta_pane'>
+			<h3 style="margin-bottom: 5px; margin-top: 5px;">Quadavore - Chart Land</h3>
+			<div id="profile"></div>
+		</div>
+		<div id='upper_pane'>
+			<div id="map"></div>
+			<div id="previous_flights_wrapper">
+				<div id='flights_header'>Flights<div id='upload'></div></div>
+				<div id="previous_flights"></div>
+			</div>
+		</div>
+		<div id='lower_pane'>
+			<div id="parsed_flight">
+				<div id="parsed_flight_name"></div>
+				<table>
+					<thead>
+					<tr>
+						<th colspan='2'>Flight Facts</th>
+					</tr>
+					</thead>
 
-	<div id="map" style="width: 600px; height: 400px;"></div>
+					<tbody></tbody>
+				</table>
+			</div>
 
-	<div id="parsed_flight">
-		<div id="parsed_flight_name"></div>
-
-		<table>
-			<thead>
-			<tr>
-				<th>Key</th>
-				<th>Value</th>
-			</tr>
-			</thead>
-
-			<tbody></tbody>
-		</table>
-	</div>
-
-	<div id="chart"></div>
+			<div id="chart"></div>
+		</div>
 
 </div>

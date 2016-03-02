@@ -49,13 +49,6 @@ module.exports = function(grunt)
 				filter: 'isFile'
 			}
 		},
-		jshint: {
-			options: {
-				eqnull: true,
-				esversion: 6
-			},
-			all: ['Gruntfile.js', 'client/js/app/*.js', 'client/js/pages/*.js']
-		},
 		htmlmin: {
 			dev: {
 				cwd: 'client',
@@ -137,7 +130,7 @@ module.exports = function(grunt)
 	});
 
 	// Load the plugin that provides the "uglify" task.
-	grunt.loadNpmTasks('grunt-contrib-jshint');
+	
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-watch');
@@ -157,12 +150,12 @@ module.exports = function(grunt)
 	grunt.registerTask(
 		'build',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'jshint', 'copy:build', 'copy:android', 'copy:third_party_images', 'refupdate', 'less:dev', 'htmlmin:dev', 'browserify']
+		['clean:build', 'copy:build', 'copy:android', 'copy:third_party_images', 'refupdate', 'less:dev', 'htmlmin:dev', 'browserify']
 	);
 
 	grunt.registerTask(
 		'release',
 		'Compiles all of the assets and copies the files to the build directory.',
-		['clean:build', 'jshint', 'copy:build', 'copy:android', 'refupdate', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
+		['clean:build', 'copy:build', 'copy:android', 'refupdate', 'less:prod', 'htmlmin:prod', 'browserify', 'uglify']
 	);
 };

@@ -14,8 +14,22 @@ module.exports = (function()
 
 	module.init = function()
 	{
+        var loc_split = location.href.split('?');
+        var params = {};
+        if (loc_split.length > 1)
+        {
+            params = loc_split[1].split('&').reduce(function(obj, str)
+            {
+                var split = str.split('=');
+                obj[split[0]] = split[1];
+                return obj;
+            }, {});
+        }
+        
 		history.pushState({}, "Quadavore - Chart Land", "?user_id=" + window.quadavore.profile.id);
-
+        
+        
+        var current_charts = {};
 		var get_flight_logs = function()
 		{
 			$.get('/flight_logs', {user_id: window.quadavore.profile.id}, function(result)
@@ -25,8 +39,11 @@ module.exports = (function()
 				result.flight_logs.forEach(function(name)
 				{
 					var $flight = $('<div class="flight_link">' + name + '</div>');
+                    $flight.attr('fname', name);
+                    
 					$flight.on('click', function()
 					{
+                        history.pushState({}, "Quadavore - Chart Land", '?user_id='+ window.quadavore.profile.id+'&f='+name);
 						$flight.parent().find('.active').removeClass('active');
 						$flight.addClass('active');
 						$.get('/flight_log', {flight_name: name, user_id: window.quadavore.profile.id}, function(result)
@@ -59,13 +76,8 @@ module.exports = (function()
 							});
 
 							flightPath.setMap(map);
-
-
-							// ------------
-							var yAxis = [];
-							var series_all = [];
-							var series_count = 0;
-
+                            
+                            // Flight facts
 							for (var item in modules)
 							{
 								if (modules[item].type == 'value')
@@ -82,52 +94,88 @@ module.exports = (function()
 									$row.append('<td>' + nice_value + '</td>');
 									$table.append($row);
 								}
-								else if (modules[item].type == 'series')
-								{
-									var axis_def = {
-										title: {
-											text: modules[item].display_name
-										}
-									};
-
-									if (modules[item].label_format != null)
-									{
-										axis_def.labels = {
-											format: modules[item].label_format
-										};
-									}
-									yAxis.push(axis_def);
-
-									var series = {
-										name: modules[item].display_name,
-										type: 'spline',
-										yAxis: series_count,
-										data: parsed_output[item]
-									};
-
-									series_all.push(series);
-									series_count++;
-								}
 							}
+                            
+                            // Flight timelines
+                            var do_chart = function(target, title, modules, output, use_series)
+                            {
+                                if (use_series === undefined)
+                                {
+                                    use_series = Object.keys(modules).filter(function(module)
+                                    {
+                                        return modules[module].type == 'series';
+                                    });
+                                }
+                                
+                                var yAxis = [];
+                                var series_set = [];
+                                
+                                
+                                for (var i = 0; i < use_series.length; i++)
+                                {
+                                    var series_id = use_series[i];
+                                    if (modules[series_id].type != 'not_supported')
+                                    {
+                                        var axis_def = {
+                                            title: {
+                                                text: modules[series_id].display_name
+                                            }
+                                        };
 
+                                        if (modules[series_id].label_format != null)
+                                        {
+                                            axis_def.labels = {
+                                                format: modules[series_id].label_format
+                                            };
+                                        }
 
-							if (series_all.length > 0)
-							{
-								// The selector.highcharts() method doesn't seem to work when
-								// highcharts is included as a package.json module.
-								Highcharts.chart(module.$("#chart")[0], {
-									yAxis: yAxis,
-									xAxis: {
-										type: 'linear'
-									},
-									series: series_all
-								});
-							}
+                                        yAxis.push(axis_def);
+
+                                        var series = {
+                                            name: modules[series_id].display_name,
+                                            type: 'spline',
+                                            yAxis: yAxis.length-1,
+                                            data: output[series_id]
+                                        };
+                                        
+                                        series_set.push(series);
+                                    }
+                                }
+                                
+                                if (series_set.length)
+                                {
+                                    var chart = Highcharts.chart(target, {
+                                        yAxis: yAxis,
+                                        xAxis: {
+                                            type: 'linear'
+                                        },
+                                        series: series_set,
+                                        title: {
+                                            text: title
+                                        }
+                                        
+                                    });
+                                    
+                                    return chart;
+                                } 
+                            };
+                            
+                            current_charts.distances = do_chart(module.$('[tab="distances"]')[0], 'Distances', modules, parsed_output, ['speed_series', 'altitude_series', 'distance_series']);
+                            current_charts.health = do_chart(module.$('[tab="health"]')[0], 'Health & Signal', modules, parsed_output, ['satellites_series', 'battery_percent_series', 'downlink_quality']);
+                            current_charts.all = do_chart(module.$('[tab="all"]')[0], 'All', modules, parsed_output);
 						});
 					});
 
 					$flights.append($flight);
 				});
+                
+                if (params['f'] !== undefined)
+                {
+                    setTimeout(function()
+                    {
+                        module.$('[fname="'+params['f']+'"]').click();
+                    });
+                }
 			});
 		};
 
@@ -143,14 +191,52 @@ module.exports = (function()
 			});
 		});
 
-		module.$('#upload_logs').prop('disabled', true);
+        module.$('#chart').wftabs({
+            tabs: {
+                distances: {
+                    on_activate: function()
+                    {
+                        if (current_charts.distances !== undefined)
+                        {
+                            var tab = $(this.elem);
+                            current_charts.distances.setSize(tab.width(), tab.height(), false);
+                        }
+                        
+                    }
+                },
+                health: {
+                    on_activate: function()
+                    {
+                        if (current_charts.health !== undefined)
+                        {
+                            var tab = $(this.elem);
+                            current_charts.health.setSize(tab.width(), tab.height(), false);
+                        }
+                        
+                    }
+                },
+                all: {
+                    on_activate: function()
+                    {
+                        if (current_charts.all !== undefined)
+                        {
+                            var tab = $(this.elem);
+                            current_charts.all.setSize(tab.width(), tab.height(), false);
+                        }
+                    }
+                }
+            }
+        });
 
+        console.log(module.$('#upload'));
 		module.$('#upload').on('click', function()
 		{
+            console.log('clicky');
 			var dialog = $('#upload_dialog').clone().wfdialog({
 				title: 'Upload Flight Logs',
 				on_open: function()
 				{
+                    console.log('open');
 					var $c = $(this.content);
 					var $dragon_drop = $c.find('#dragon_drop');
 

@@ -8,10 +8,6 @@ module.exports = (function()
 	var wfui = require('wupfindui');
 	wfui.jquery_attach($);
 
-	// TODO - better way to go up to correct level.
-	var parse_thing = require('../../../shared/parse');
-	var modules = require('../../../shared/modules');
-
 	module.init = function()
 	{
         var loc_split = location.href.split('?');
@@ -48,11 +44,14 @@ module.exports = (function()
 						$flight.addClass('active');
 						$.get('/flight_log', {flight_name: name, user_id: window.quadavore.profile.id}, function(result)
 						{
+                            var parsed_output = result.flight.data;
+                            var modules = result.flight.meta;
+                            
 							var $parsed_flight = $("#parsed_flight");
 
 							$parsed_flight.find('#parsed_flight_name').text(name);
 
-							var parsed_output = parse_thing(result, modules);
+							//var parsed_output = parse_thing(result, modules);
 							var $table = $parsed_flight.find('table tbody').empty();
 
 							// -----------
@@ -228,10 +227,8 @@ module.exports = (function()
             }
         });
 
-        console.log(module.$('#upload'));
 		module.$('#upload').on('click', function()
 		{
-            console.log('clicky');
 			var dialog = $('#upload_dialog').clone().wfdialog({
 				title: 'Upload Flight Logs',
 				on_open: function()
@@ -358,7 +355,7 @@ module.exports = (function()
 				},
 				appendTo: module.$container[0]
 			});
-			console.log(dialog);
+			
 		});
 
 

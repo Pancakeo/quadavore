@@ -9,9 +9,13 @@ var web_root = require('path').join(__dirname, '..', 'build');
 var bodyParser = require('body-parser');
 var compress = require('compression');
 
-var multer = require('multer'); // v1.0.5
-var upload = multer(); // for parsing multipart/form-data
 var path = require('path');
+
+var db_connect = require('./db');
+db_connect(function(db)
+{
+    global.db = db;
+});
 
 global.server_root = __dirname;
 global.ROOT_LOG_FOLDER = 'quad_logs';

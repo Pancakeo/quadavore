@@ -7,15 +7,28 @@ module.exports = function(app)
     {
         var user_id = req.query.user_id;
         var flight_name = req.query.flight_name;
-        var path_to_flight = path.join(global.server_root, global.ROOT_LOG_FOLDER, user_id, flight_name);
-
+        
         try
         {
-            fs.statSync(path_to_flight);
-            res.download(path_to_flight);
+            
+            var flight = null;
+            var cursor = global.db.collection('flight_logs').find({user: user_id, name: flight_name}, {meta: 1, data: 1, _id: 0});
+            cursor.each(function(err, doc)
+            {
+                if (doc !== null)
+                {
+                    flight = doc;
+                }
+                else
+                {
+                    res.json({success: true, flight: flight});
+                }
+                
+            });
         }
         catch (e)
         {
+            console.log(e);
             res.json({success: false, reason: "Flight not found"});
         }
     });

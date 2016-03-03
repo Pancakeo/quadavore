@@ -36,20 +36,26 @@ module.exports = function(file, module_definitions)
 		}
 	});
 
-	var output = {};
+	var data = {};
+    var meta = {};
 	for (var module_name in modules)
 	{
+        meta[module_name] = {};
 		if (modules[module_name].type != 'not_supported')
 		{
-			output[module_name] = modules[module_name].result(output);
+            meta[module_name].type = modules[module_name].type;
+            meta[module_name].display_name = modules[module_name].display_name;
+            meta[module_name].label_format = modules[module_name].label_format || null;
+            
+			data[module_name] = modules[module_name].result(data);
 		}
 		else
 		{
-			output[module_name] = 'not_supported';
+			data[module_name] = 'not_supported';
 		}
 	}
 
-	return output;
+	return {data: data, meta: meta};
 }
 
 

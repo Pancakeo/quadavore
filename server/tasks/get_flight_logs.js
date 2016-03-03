@@ -5,27 +5,30 @@ module.exports = function(app)
     app.get('/flight_logs', function(req, res)
     {
         var user_id = req.query.user_id;
-        var user_folder = path.join(global.server_root, global.ROOT_LOG_FOLDER, user_id);
         
         try
         {
-            fs.statSync(user_folder);
-
-            fs.readdir(user_folder, function(err, result)
+            var logs_list = [];
+            var cursor = global.db.collection('flight_logs').find({user: user_id}, {name: 1, _id: 0});
+            cursor.each(function(err, doc)
             {
-                res.json({
-                    flight_logs: result.filter(function(file)
-                    {
-                        return file.toLowerCase().indexOf('.csv') >= 0;
-                        //file.toLowerCase().indexOf('.txt') >= 0;
-                    })
-                });
-            })
+                if (doc !== null)
+                {
+                    logs_list.push(doc.name);
+                }
+                else
+                {
+                    res.json({flight_logs: logs_list});
+                }
+            });
         }
         catch (e)
         {
-            console.log('no folder for user ' + user_id);
-            res.json({flight_logs: []});
+            console.log(e);
+            var logs_list = [];
+            res.json({
+                flight_logs: logs_list
+            });
         }
     });
 };

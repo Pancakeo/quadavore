@@ -2,6 +2,8 @@ var upload = (require('multer'))();
 var fs = require('fs');
 var path = require('path');
 var zlib = require('zlib');
+var parse = require(global.server_root+'/parse/parse');
+var parse_modules = require(global.server_root+'/parse/modules');
 
 module.exports = function(app)
 {
@@ -61,7 +63,7 @@ module.exports = function(app)
 
         var write_file = function(buffer)
         {
-            fs.writeFile('./' + user_folder + '/' + file_name, buffer, function(err, result)
+            fs.writeFile(path.join(user_folder, file_name), buffer, function(err, result)
             {
                 if (err != null)
                 {
@@ -85,7 +87,8 @@ module.exports = function(app)
         if (is_gzip === undefined)
         {
             write_file(file.buffer);
-        } else
+        } 
+        else
         {
             zlib.gunzip(file.buffer, function(err, buffer)
             {
@@ -103,6 +106,22 @@ module.exports = function(app)
                 write_file(buffer);
             });
         }
+        
+        setTimeout(function()
+        {
+            fs.readFile(path.join(user_folder, file_name), 'utf8', function(err, data)
+            {
+                var data = parse(data, parse_modules);
+                data.name = file_name.replace('.csv','');
+                data.user = user_id;
+                
+                var flight_logs = global.db.collection('flight_logs');
+                flight_logs.insert(data, function(err,data)
+                {
+                    // Seems like something ought to go here
+                });
+            });
+        }, 0);
     });
 };
 

@@ -432,11 +432,34 @@ module.exports = {
                 prev_point = cur_point;
             }
             return dist;
-
         }
-
+    },
+    home_point_derived:
+    {
+        type: 'special',
+        display_name: 'Home Point Derived',
+        result: function(results)
+        {
+            var point = {};
+            if (results.home_latitude != 'not_supported')
+            {
+                point.lat = results.home_latitude;
+            }
+            else
+            {
+                point.lat = results.flight_path[0].lat;
+            }
+            
+            if (results.home_longitude != 'not_supported')
+            {
+                point.lng = results.home_longitude;
+            }
+            else
+            {
+                point.lng = results.flight_path[0].lng;
+            }
+        }
     }
-
 };
 	
 

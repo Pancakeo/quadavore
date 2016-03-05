@@ -5,7 +5,7 @@ module.exports = function(cb)
 {
     dbclient.connect(url, function(err, db)
     {
-        console.log('oh so connected');
+        console.log('Connected to MongoDB');
         cb(db);
     });
 };

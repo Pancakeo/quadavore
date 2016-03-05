@@ -458,6 +458,7 @@ module.exports = {
             {
                 point.lng = results.flight_path[0].lng;
             }
+            return point;
         }
     }
 };

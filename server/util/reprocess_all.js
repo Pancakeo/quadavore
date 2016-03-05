@@ -31,12 +31,12 @@ db_connect(function(db)
             {
                 console.log('Processing '+file.path);
                 var parsed = parse(data, modules);
-                parsed.name = file.name;
+                parsed.name = file.name.replace('.csv','');
                 parsed.user = file.user;
 
                 db.collection('flight_logs').updateOne({
-                    name: file.name,
-                    user: file.user
+                    name: parsed.name,
+                    user: parsed.user
                 }, parsed, {upsert: true});
                 console.log('Updated '+file.path);
                 next_file();

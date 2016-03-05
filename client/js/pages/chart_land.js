@@ -24,6 +24,30 @@ module.exports = (function()
         
 		history.pushState({}, "Quadavore - Chart Land", "?user_id=" + window.quadavore.profile.id);
         
+        var all_map;
+        var map_tabs = module.$('#maps').wftabs({
+            tabs: {
+                all_map:
+                {
+                    on_activate: function()
+                    {
+                        history.pushState({}, "Quadavore - Chart Land", "?user_id=" + window.quadavore.profile.id); 
+                    }
+                },
+                flight_map:
+                {
+                    on_activate: function()
+                    {
+                        if (module.$('#previous_flights div.flight_link.active').length > 0)
+                        {
+                            var name = module.$('#previous_flights div.flight_link.active').attr('fname');
+                            history.pushState({}, "Quadavore - Chart Land", '?user_id='+ window.quadavore.profile.id+'&f='+name);
+                        }
+                    }
+                }
+                
+            }
+        });
         
         var current_charts = {};
 		var get_flight_logs = function()
@@ -31,14 +55,36 @@ module.exports = (function()
 			$.get('/flight_logs', {user_id: window.quadavore.profile.id}, function(result)
 			{
 				var $flights = $("#previous_flights").empty();
-
-				result.flight_logs.forEach(function(name)
+                
+                all_map = new google.maps.Map(document.getElementById('all_map'), {
+                    mapTypeId: google.maps.MapTypeId.TERRAIN,
+                    zoom: 10
+                });
+                var all_bounds = new google.maps.LatLngBounds;
+                
+				result.flight_logs.forEach(function(flight)
 				{
+                    
+                    var name = flight.name;
+                    
+                    all_bounds.extend(new google.maps.LatLng(flight.home_point));
+                    var marker = new google.maps.Marker({
+                        map: all_map,
+                        title: name,
+                        position: flight.home_point
+                    });
+                    
 					var $flight = $('<div class="flight_link">' + name + '</div>');
-                    $flight.attr('fname', name);
+                    $flight.attr('fname', flight.name);
+                    
+                    marker.addListener('click', function()
+                    {
+                        $flight.click();
+                    });
                     
 					$flight.on('click', function()
 					{
+                        map_tabs.activate('flight_map');   
                         history.pushState({}, "Quadavore - Chart Land", '?user_id='+ window.quadavore.profile.id+'&f='+name);
 						$flight.parent().find('.active').removeClass('active');
 						$flight.addClass('active');
@@ -51,15 +97,13 @@ module.exports = (function()
 
 							$parsed_flight.find('#parsed_flight_name').text(name);
 
-							//var parsed_output = parse_thing(result, modules);
 							var $table = $parsed_flight.find('table tbody').empty();
 
 							// -----------
-							var lat = parsed_output.home_latitude;
-							var lng = parsed_output.home_longitude;
-
-							var map = new google.maps.Map(document.getElementById('map'), {
-								center: {lat: lat, lng: lng},
+							
+                            
+							var map = new google.maps.Map(document.getElementById('flight_map'), {
+								center: parsed_output.home_point_derived,
 								zoom: 13,
 								mapTypeId: google.maps.MapTypeId.TERRAIN
 							});
@@ -168,11 +212,15 @@ module.exports = (function()
 					$flights.append($flight);
 				});
                 
+                all_map.fitBounds(all_bounds);
+                
+            
                 if (params['f'] !== undefined)
                 {
-                    setTimeout(function()
+                    var after_all_map_loaded = google.maps.event.addListener(all_map, 'bounds_changed', function()
                     {
                         module.$('[fname="'+params['f']+'"]').click();
+                        google.maps.event.removeListener(after_all_map_loaded);
                     });
                 }
 			});
@@ -233,7 +281,6 @@ module.exports = (function()
 				title: 'Upload Flight Logs',
 				on_open: function()
 				{
-                    console.log('open');
 					var $c = $(this.content);
 					var $dragon_drop = $c.find('#dragon_drop');
 
@@ -358,27 +405,11 @@ module.exports = (function()
 			
 		});
 
-
-
 		navigator.geolocation.getCurrentPosition(function(result)
 		{
 			window.quadavore.latitude = result.coords.latitude;
 			window.quadavore.longitude = result.coords.longitude;
 		});
-
-		window.initGoogleMaps = function()
-		{
-			var lat = window.quadavore.latitude || 37;
-			var lng = window.quadavore.longitude || -130;
-
-			module.google_maps_ready = true;
-			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 8,
-				center: {lat: lat, lng: lng}
-			});
-
-
-		};
 
 		module.$('#profile').text("User ID: " + window.quadavore.profile.id);
 	};
@@ -396,8 +427,13 @@ module.exports = (function()
 				return $(sel, module.$container);
 			};
 
-			module.$container.append('<script src="//maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY + '&callback=initGoogleMaps" async defer></script>');
-			module.init();
+            window.module_init = function()
+            {
+                module.init();
+                window.module_init = null;
+            };
+			module.$container.append('<script src="//maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAPS_API_KEY + '&callback=module_init" async defer></script>');
+			
 		});
 
 	};

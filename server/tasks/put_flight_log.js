@@ -70,8 +70,7 @@ module.exports = function(app)
 				data.user = user_id;
 
 				var flight_logs = global.db.collection('flight_logs');
-				// TODO - use insertOne (insert is a deprecated method)
-				flight_logs.insert(data, function(err, data)
+				flight_logs.insertOne(data, function(err, data)
 				{
 					// Seems like something ought to go here
 				});

@@ -37,6 +37,7 @@ node_modules
 
 # api keys and what not
 secrets.js
+settings.json
 
 # Sample data
 quad_logs

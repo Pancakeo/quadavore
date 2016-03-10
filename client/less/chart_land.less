@@ -1,56 +1,53 @@
 @proper-green: #528D3B;
-#chart_land
-{
+#chart_land {
 
   padding: 0 20px 20px;
   height: 100%;
 
-  #top_container
-  {
+  .remove_log {
+    float: right;
+    margin-right: 5px;
+    color: red;
+  }
+
+  #top_container {
     height: 100%;
     display: flex;
     flex-direction: column;
 
-    #meta_pane
-    {
+    #meta_pane {
       padding-left: 10px;
       background-color: @proper-green;
       height: 53px;
       flex-grow: 0;
     }
 
-    #upper_pane
-    {
+    #upper_pane {
       flex-grow: 1;
       display: flex;
       flex-direction: row;
       border-bottom: 2px solid @proper-green;
 
-      #maps
-      {
+      #maps {
         flex-grow: 1;
       }
 
-      #previous_flights_wrapper
-      {
+      #previous_flights_wrapper {
         border-left: 2px solid @proper-green;
         width: 250px;
         flex-grow: 0;
         display: flex;
         flex-direction: column;
 
-
-        #flights_header
-        {
-          width: 100%
+        #flights_header {
+          width: 100%;
           height: 24px;
           flex-grow: 0;
           font-weight: bold;
           text-align: center;
           background-color: @proper-green;
-          
-          #upload
-          {
+
+          #upload {
             background-image: url('images/up.png');
             height: 16px;
             width: 16px;
@@ -61,18 +58,15 @@
             cursor: pointer;
           }
 
-          #upload:hover
-          {
+          #upload:hover {
             opacity: 0.8;
           }
         }
 
-        #previous_flights
-        {
+        #previous_flights {
           overflow-y: auto;
           flex-grow: 1;
-          .flight_link
-          {
+          .flight_link {
             height: 21px;
             padding-left: 10px;
             cursor: pointer;
@@ -80,78 +74,65 @@
             border-bottom: 1px solid @proper-green;
           }
 
-          .flight_link.active
-          {
+          .flight_link.active {
             font-weight: bold;
           }
         }
-        
+
       }
     }
 
-    #lower_pane
-    {
+    #lower_pane {
       height: 42%;
       display: flex;
       flex-direction: row;
 
-      #parsed_flight
-      {
+      #parsed_flight {
         width: 400px;
         flex-grow: 0;
         border-right: 2px solid @proper-green;
         overflow-y: auto;
 
-        #parsed_flight_name
-        {
+        #parsed_flight_name {
           height: 21px;
           background-color: @proper-green;
           text-align: center;
         }
 
-        table
-        {
+        table {
           width: 100%;
         }
       }
 
-      #chart
-      {
+      #chart {
         flex-grow: 1;
       }
     }
   }
 
-  #parsed_flight
-  {
+  #parsed_flight {
     font-size: 12px;
 
-    #parsed_flight_name
-    {
+    #parsed_flight_name {
       font-weight: bold;
       font-size: 18px;
     }
-    table
-    {
+    table {
       border-collapse: collapse;
-    
-      thead tr
-      {
+
+      thead tr {
         background: lightgrey;
       }
 
-      tr:nth-child(even)
-      {
+      tr:nth-child(even) {
         background: lightgrey;
       }
 
-      th
-      {
+      th {
         text-align: left;
       }
 
-      th, td
-      {
+      th, td {
         padding: 5px;
         border: 1px #ccc solid;
       }
@@ -159,46 +140,38 @@
 
   }
 
-  #dragon_drop
-  {
-    #help_text
-    {
+  #dragon_drop {
+    #help_text {
       text-align: center;
       height: 40px;
       padding: 15px;
       border: 1px dotted #ccc;
     }
 
-    #file_results
-    {
+    #file_results {
       display: none;
     }
 
-    #upload_logs
-    {
+    #upload_logs {
       margin-top: 5px;
     }
 
-    table
-    {
+    table {
 
       width: 100%;
       border-collapse: collapse;
 
-      th
-      {
+      th {
         padding: 5px;
         border: 1px #ccc solid;
         text-align: left;
       }
-      td
-      {
+      td {
         padding: 5px;
         border: 1px #ccc solid;
       }
 
-      td.error
-      {
+      td.error {
         color: red;
       }
     }

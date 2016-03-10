@@ -4,48 +4,41 @@ var parse = require('../parse/parse');
 var db_connect = require('../db');
 
 var log_dir = '../quad_logs';
-db_connect(function(db)
-{
+db_connect(function(db) {
     var queue = [];
-    fs.readdirSync(log_dir).forEach(function(subdir)
-    {
-        fs.readdirSync(log_dir+'/'+subdir).filter(function(file)
-        {
+
+    fs.readdirSync(log_dir).forEach(function(subdir) {
+        fs.readdirSync(log_dir + '/' + subdir).filter(function(file) {
             return file != 'meta.txt'; // Remove after ridding ourselves of meta.txt
-        }).forEach(function(file)
-        {
+        }).forEach(function(file) {
             queue.push({
-                path: log_dir+'/'+subdir+'/'+file,
+                path: log_dir + '/' + subdir + '/' + file,
                 user: subdir,
                 name: file
             });
         });
     });
-    
-    var next_file = function()
-    {
-        if (queue.length > 0)
-        {
+
+    var next_file = function() {
+        if (queue.length > 0) {
             var file = queue.shift();
-            fs.readFile(file.path, 'utf8', function(err, data)
-            {
-                console.log('Processing '+file.path);
+            fs.readFile(file.path, 'utf8', function(err, data) {
+                console.log('Processing ' + file.path);
                 var parsed = parse(data, modules);
-                parsed.name = file.name.replace('.csv','');
+                parsed.name = file.name.replace('.csv', '');
                 parsed.user = file.user;
 
                 db.collection('flight_logs').updateOne({
                     name: parsed.name,
                     user: parsed.user
                 }, parsed, {upsert: true});
-                console.log('Updated '+file.path);
+                console.log('Updated ' + file.path);
                 next_file();
             })
         }
-        else
-        {
+        else {
             db.close();
         }
     };
     next_file();
-})
+});

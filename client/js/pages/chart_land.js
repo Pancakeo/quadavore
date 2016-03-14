@@ -69,11 +69,19 @@ module.exports = (function() {
 
                     $delete.on('click', function(e) {
                         e.stopPropagation();
-                        var do_it = confirm("Really delete " + name + "?");
-                        if (do_it) {
+                        var confirm_delete = confirm("Really delete " + name + "?");
+                        if (confirm_delete) {
                             $.ajax({
                                 type: "DELETE",
-                                url: '/flight_log/' + encodeURIComponent(name)
+                                url: '/flight_log/?flight_name=' + encodeURIComponent(name) + '&user_id=' + encodeURIComponent(window.quadavore.profile.id),
+                                success: function(data) {
+                                    if (data.success === true) {
+                                        $delete.parent().remove();
+                                    }
+                                }, error: function(data) {
+                                    $('<div>Server error</div>').wfdialog({});
+                                }
+
                             });
                         }
                     });

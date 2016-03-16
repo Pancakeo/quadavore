@@ -108,23 +108,27 @@ module.exports = (function() {
 
                             var $table = $parsed_flight.find('table tbody').empty();
 
+                            var flight_bounds = new google.maps.LatLngBounds;
                             var map = new google.maps.Map(document.getElementById('flight_map'), {
-                                center: parsed_output.home_point_derived,
-                                zoom: 13,
+                                zoom: 10,
                                 mapTypeId: google.maps.MapTypeId.TERRAIN
                             });
 
                             var flight_plan = parsed_output.flight_path;
+                            flight_plan.forEach(function(coord) {
+                                flight_bounds.extend(new google.maps.LatLng(coord));
+                            });
 
                             var flightPath = new google.maps.Polyline({
                                 path: flight_plan,
                                 geodesic: true,
                                 strokeColor: '#FF0000',
                                 strokeOpacity: 1.0,
-                                strokeWeight: 2
+                                strokeWeight: 3
                             });
 
                             flightPath.setMap(map);
+                            map.fitBounds(flight_bounds);
 
                             // Flight facts
                             for (var item in modules) {

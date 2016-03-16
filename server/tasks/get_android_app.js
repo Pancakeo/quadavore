@@ -14,7 +14,7 @@ module.exports = function(app) {
             var out_string = "<h3>Android Releases</h3><ul>";
 
             files.forEach(function(file) {
-                out_string += "<li><a href='release/" + file + "'>" + file + "</a></li>";
+                out_string += "<li><a href='/release/" + file + "'>" + file + "</a></li>";
             });
 
             out_string += "</ul>";
